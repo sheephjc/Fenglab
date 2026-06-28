@@ -1,0 +1,86 @@
+- generic [ref=e2]:
+  - link "跳到主要内容" [ref=e3] [cursor=pointer]:
+    - /url: "#main-content"
+  - banner [ref=e4]:
+    - link "Feng Lab 首页" [ref=e6] [cursor=pointer]:
+      - /url: "#/"
+      - generic [ref=e7]:
+        - strong [ref=e8]: Welcome to Feng Lab
+        - generic [ref=e9]: 核酸功能材料实验室
+    - navigation "主导航" [ref=e10]:
+      - link "首页" [ref=e11] [cursor=pointer]:
+        - /url: "#/"
+      - link "研究方向" [ref=e12] [cursor=pointer]:
+        - /url: "#/research"
+      - link "论文发表" [ref=e13] [cursor=pointer]:
+        - /url: "#/publications"
+      - button "成员" [ref=e15] [cursor=pointer]:
+        - text: 成员
+        - img [ref=e16]
+      - link "课题组风采" [ref=e18] [cursor=pointer]:
+        - /url: "#/gallery"
+      - link "联系方式" [ref=e19] [cursor=pointer]:
+        - /url: "#/contact"
+  - main [ref=e20]:
+    - region "首页大图轮播" [ref=e21]:
+      - figure "2026 Feng Group" [ref=e22]:
+        - generic [ref=e23]:
+          - img "Feng Lab 课题组合照占位图" [ref=e24]
+          - button "上一张轮播图" [ref=e25] [cursor=pointer]:
+            - img [ref=e26]
+          - button "下一张轮播图" [ref=e28] [cursor=pointer]:
+            - img [ref=e29]
+          - generic "轮播图切换" [ref=e31]:
+            - button "切换到：从分子设计到生物医用材料" [ref=e32] [cursor=pointer]
+            - button "切换到：以代表性成果连接基础研究与应用场景" [ref=e33] [cursor=pointer]
+            - button "切换到：开放、认真、互相支持的科研氛围" [ref=e34] [cursor=pointer]
+        - generic [ref=e35]: 2026 Feng Group
+    - generic [ref=e37]:
+      - generic [ref=e38]:
+        - generic [ref=e39]:
+          - paragraph [ref=e40]: About Feng Lab
+          - heading "核酸功能材料实验室" [level=2] [ref=e41]
+          - paragraph [ref=e42]: 面向生物医用材料与精准诊疗的功能分子系统
+        - paragraph [ref=e43]: Feng Lab 聚焦核酸功能材料、响应性分子体系与生物医用应用，围绕精准诊疗、分子识别和材料界面等方向开展交叉研究。网站将用于展示课题组研究方向、论文成果、团队成员与日常风采，也欢迎对相关方向感兴趣的同学和合作伙伴与我们联系。
+      - complementary "最新动态" [ref=e44]:
+        - paragraph [ref=e45]: News
+        - heading "最新动态" [level=2] [ref=e46]
+        - generic [ref=e47]:
+          - article [ref=e48]:
+            - time [ref=e49]: 2026-06
+            - generic [ref=e50]:
+              - heading "Feng Lab 网站建设启动" [level=3] [ref=e51]
+              - paragraph [ref=e52]: 官网初版上线后，将逐步补充真实研究内容、成员信息和论文成果。
+          - article [ref=e53]:
+            - time [ref=e54]: 2026-05
+            - generic [ref=e55]:
+              - heading "欢迎对交叉研究感兴趣的同学联系" [level=3] [ref=e56]
+              - paragraph [ref=e57]: 课题组长期欢迎具有化学、材料、生物医学或相关背景的同学加入。
+          - article [ref=e58]:
+            - time [ref=e59]: 2026-04
+            - generic [ref=e60]:
+              - heading "代表论文与成果图待更新" [level=3] [ref=e61]
+              - paragraph [ref=e62]: 后续可在数据文件中维护论文列表，并在首页突出最新代表成果。
+  - contentinfo [ref=e63]:
+    - generic [ref=e64]:
+      - generic [ref=e65]:
+        - link "Feng Lab 首页" [ref=e66] [cursor=pointer]:
+          - /url: "#/"
+          - img "Feng Lab logo" [ref=e67]
+          - generic [ref=e68]:
+            - strong [ref=e69]: Feng Lab
+            - generic [ref=e70]: Nucleic Acid Functional Materials Laboratory
+        - paragraph [ref=e71]: 北京化工大学李凤课题组
+      - generic [ref=e72]:
+        - heading "联系" [level=2] [ref=e73]
+        - paragraph [ref=e74]: fenglab@example.edu.cn
+        - paragraph [ref=e75]:
+          - generic [ref=e76]: 北京市朝阳区北三环东路15号
+          - generic [ref=e77]: 北京化工大学东校区化新楼108室
+      - generic [ref=e78]:
+        - heading "相关链接" [level=2] [ref=e79]
+        - generic [ref=e80]:
+          - link "北京化工大学" [ref=e81] [cursor=pointer]:
+            - /url: https://www.buct.edu.cn/main.htm
+          - link "北京化工大学化学学院" [ref=e82] [cursor=pointer]:
+            - /url: https://chemistry.buct.edu.cn/main.htm

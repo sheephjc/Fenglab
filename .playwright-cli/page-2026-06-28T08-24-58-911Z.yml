@@ -1,0 +1,148 @@
+- generic [ref=e2]:
+  - link "跳到主要内容" [ref=e3] [cursor=pointer]:
+    - /url: "#main-content"
+  - banner [ref=e4]:
+    - link "Feng Lab 首页" [ref=e6] [cursor=pointer]:
+      - /url: "#/"
+      - generic [ref=e7]:
+        - strong [ref=e8]: Welcome to Feng Lab
+        - generic [ref=e9]: 核酸功能材料实验室
+    - navigation "主导航" [ref=e10]:
+      - link "首页" [ref=e11] [cursor=pointer]:
+        - /url: "#/"
+      - link "研究方向" [ref=e12] [cursor=pointer]:
+        - /url: "#/research"
+      - link "论文发表" [active] [ref=e13] [cursor=pointer]:
+        - /url: "#/publications"
+      - button "成员" [ref=e15] [cursor=pointer]:
+        - text: 成员
+        - img [ref=e16]
+      - link "课题组风采" [ref=e18] [cursor=pointer]:
+        - /url: "#/gallery"
+      - link "联系方式" [ref=e19] [cursor=pointer]:
+        - /url: "#/contact"
+  - main [ref=e20]:
+    - generic [ref=e88]:
+      - paragraph [ref=e89]: Publications
+      - heading "论文发表" [level=1] [ref=e90]
+      - paragraph [ref=e91]: 保留代表论文和按年份归档两种浏览方式，兼顾学术展示与长期维护。
+    - generic [ref=e93]:
+      - generic [ref=e94]:
+        - paragraph [ref=e95]: Selected Work
+        - heading "代表论文" [level=2] [ref=e96]
+        - paragraph [ref=e97]: 替换真实论文后，建议选择 3-6 篇最能代表课题组方向的成果。
+      - generic [ref=e98]:
+        - article [ref=e99]:
+          - img "论文题目占位：响应性高分子材料用于精准递送" [ref=e100]
+          - generic [ref=e101]:
+            - paragraph [ref=e102]:
+              - img [ref=e103]
+              - text: 2026 · Journal / DOI 待补充
+            - heading "论文题目占位：响应性高分子材料用于精准递送" [level=3] [ref=e105]
+            - paragraph [ref=e106]: Feng Lab members, Collaborators, F. Feng*
+            - paragraph [ref=e107]: 代表论文占位，替换时建议保留论文图或 TOC 图。
+            - generic [ref=e108]:
+              - generic [ref=e109]: 代表论文
+              - generic [ref=e110]: 生物医用材料
+        - article [ref=e111]:
+          - img "论文题目占位：可视化分子探针与疾病微环境检测" [ref=e112]
+          - generic [ref=e113]:
+            - paragraph [ref=e114]:
+              - img [ref=e115]
+              - text: 2026 · Journal / DOI 待补充
+            - heading "论文题目占位：可视化分子探针与疾病微环境检测" [level=3] [ref=e117]
+            - paragraph [ref=e118]: Feng Lab members, F. Feng*
+            - generic [ref=e119]:
+              - generic [ref=e120]: 代表论文
+              - generic [ref=e121]: 分子成像
+        - article [ref=e122]:
+          - img "论文题目占位：生物界面调控材料体系" [ref=e123]
+          - generic [ref=e124]:
+            - paragraph [ref=e125]:
+              - img [ref=e126]
+              - text: 2025 · Journal / DOI 待补充
+            - heading "论文题目占位：生物界面调控材料体系" [level=3] [ref=e128]
+            - paragraph [ref=e129]: Feng Lab members, Collaborators, F. Feng*
+            - generic [ref=e130]:
+              - generic [ref=e131]: 代表论文
+              - generic [ref=e132]: 材料界面
+    - generic [ref=e134]:
+      - generic [ref=e135]:
+        - paragraph [ref=e136]: All Publications
+        - heading "完整列表" [level=2] [ref=e137]
+        - paragraph [ref=e138]: 按年份自动分组，后续只需在数据文件中追加论文。
+      - generic [ref=e139]:
+        - region "2026" [ref=e140]:
+          - heading "2026" [level=2] [ref=e141]
+          - generic [ref=e142]:
+            - article [ref=e143]:
+              - generic [ref=e144]:
+                - heading "论文题目占位：响应性高分子材料用于精准递送" [level=3] [ref=e145]
+                - paragraph [ref=e146]: Feng Lab members, Collaborators, F. Feng*
+                - paragraph [ref=e147]: Journal / DOI 待补充
+              - generic [ref=e148]:
+                - generic [ref=e149]: 代表论文
+                - generic [ref=e150]: 生物医用材料
+            - article [ref=e151]:
+              - generic [ref=e152]:
+                - heading "论文题目占位：可视化分子探针与疾病微环境检测" [level=3] [ref=e153]
+                - paragraph [ref=e154]: Feng Lab members, F. Feng*
+                - paragraph [ref=e155]: Journal / DOI 待补充
+              - generic [ref=e156]:
+                - generic [ref=e157]: 代表论文
+                - generic [ref=e158]: 分子成像
+        - region "2025" [ref=e159]:
+          - heading "2025" [level=2] [ref=e160]
+          - generic [ref=e161]:
+            - article [ref=e162]:
+              - generic [ref=e163]:
+                - heading "论文题目占位：生物界面调控材料体系" [level=3] [ref=e164]
+                - paragraph [ref=e165]: Feng Lab members, Collaborators, F. Feng*
+                - paragraph [ref=e166]: Journal / DOI 待补充
+              - generic [ref=e167]:
+                - generic [ref=e168]: 代表论文
+                - generic [ref=e169]: 材料界面
+            - article [ref=e170]:
+              - generic [ref=e171]:
+                - heading "论文题目占位：纳米材料组装与功能增强" [level=3] [ref=e172]
+                - paragraph [ref=e173]: Feng Lab members, F. Feng*
+                - paragraph [ref=e174]: Journal / DOI 待补充
+              - generic [ref=e176]: 纳米材料
+        - region "2024" [ref=e177]:
+          - heading "2024" [level=2] [ref=e178]
+          - generic [ref=e179]:
+            - article [ref=e180]:
+              - generic [ref=e181]:
+                - heading "论文题目占位：功能分子系统的结构-性能关系" [level=3] [ref=e182]
+                - paragraph [ref=e183]: Feng Lab members, F. Feng*
+                - paragraph [ref=e184]: Journal / DOI 待补充
+              - generic [ref=e186]: 功能分子
+            - article [ref=e187]:
+              - generic [ref=e188]:
+                - heading "论文题目占位：面向生物应用的聚合物平台" [level=3] [ref=e189]
+                - paragraph [ref=e190]: Feng Lab members, Collaborators, F. Feng*
+                - paragraph [ref=e191]: Journal / DOI 待补充
+              - generic [ref=e193]: 聚合物
+  - contentinfo [ref=e63]:
+    - generic [ref=e64]:
+      - generic [ref=e65]:
+        - link "Feng Lab 首页" [ref=e66] [cursor=pointer]:
+          - /url: "#/"
+          - img "Feng Lab logo" [ref=e67]
+          - generic [ref=e68]:
+            - strong [ref=e69]: Feng Lab
+            - generic [ref=e70]: Nucleic Acid Functional Materials Laboratory
+        - paragraph [ref=e71]: 北京化工大学李凤课题组
+      - generic [ref=e72]:
+        - heading "联系" [level=2] [ref=e73]
+        - paragraph [ref=e74]: fenglab@example.edu.cn
+        - paragraph [ref=e75]:
+          - generic [ref=e76]: 北京市朝阳区北三环东路15号
+          - generic [ref=e77]: 北京化工大学东校区化新楼108室
+      - generic [ref=e78]:
+        - heading "相关链接" [level=2] [ref=e79]
+        - generic [ref=e80]:
+          - link "北京化工大学" [ref=e81] [cursor=pointer]:
+            - /url: https://www.buct.edu.cn/main.htm
+          - link "北京化工大学化学学院" [ref=e82] [cursor=pointer]:
+            - /url: https://chemistry.buct.edu.cn/main.htm

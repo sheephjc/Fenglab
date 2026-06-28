@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import {
   ArrowRight,
   BookOpen,
@@ -61,6 +61,13 @@ const navItems: NavItem[] = [
 
 const COMPACT_ENTER_SCROLL = 180;
 const COMPACT_EXIT_SCROLL = 8;
+const MOBILE_HEADER_QUERY = '(max-width: 760px)';
+const PRESERVE_COMPACT_NAV_KEY = 'fenglab:preserve-compact-navigation';
+const HEADER_COMPACT_STATE_KEY = 'fenglab:header-is-compact';
+
+function isMobileHeader() {
+  return window.matchMedia(MOBILE_HEADER_QUERY).matches;
+}
 
 function getCurrentRoute(): Route {
   const hash = window.location.hash.replace(/^#/, '') || '/';
@@ -72,6 +79,13 @@ function getCurrentRoute(): Route {
 function App() {
   const [route, setRoute] = useState<Route>(getCurrentRoute);
   const [navOpen, setNavOpen] = useState(false);
+  const [forceCompactHeader, setForceCompactHeaderState] = useState(false);
+  const forceCompactHeaderRef = useRef(false);
+
+  const setForceCompactHeader = (next: boolean) => {
+    forceCompactHeaderRef.current = next;
+    setForceCompactHeaderState(next);
+  };
 
   useEffect(() => {
     const handleHashChange = () => setRoute(getCurrentRoute());
@@ -80,8 +94,32 @@ function App() {
   }, []);
 
   useEffect(() => {
+    const shouldPreserveCompact =
+      !isMobileHeader() &&
+      Boolean(
+        forceCompactHeaderRef.current ||
+          sessionStorage.getItem(PRESERVE_COMPACT_NAV_KEY) === '1' ||
+          sessionStorage.getItem(HEADER_COMPACT_STATE_KEY) === '1' ||
+          window.scrollY > COMPACT_ENTER_SCROLL ||
+          document.querySelector('.site-header')?.classList.contains('compact'),
+      );
+    sessionStorage.removeItem(PRESERVE_COMPACT_NAV_KEY);
+    setForceCompactHeader(shouldPreserveCompact);
+    if (shouldPreserveCompact) {
+      window.dispatchEvent(new Event('fenglab:preserve-compact-header'));
+    }
     setNavOpen(false);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (shouldPreserveCompact) {
+      const root = document.documentElement;
+      const previousScrollBehavior = root.style.scrollBehavior;
+      root.style.scrollBehavior = 'auto';
+      window.scrollTo({ top: 0, left: 0 });
+      window.setTimeout(() => {
+        root.style.scrollBehavior = previousScrollBehavior;
+      }, 120);
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }, [route]);
 
   return (
@@ -89,7 +127,14 @@ function App() {
       <a className="skip-link" href="#main-content">
         跳到主要内容
       </a>
-      <Header route={route} navOpen={navOpen} onToggleNav={() => setNavOpen((open) => !open)} />
+      <Header
+        route={route}
+        navOpen={navOpen}
+        forceCompactHeader={forceCompactHeader}
+        onToggleNav={() => setNavOpen((open) => !open)}
+        onPreserveCompactHeader={() => setForceCompactHeader(true)}
+        onReleaseCompactHeader={() => setForceCompactHeader(false)}
+      />
       <main id="main-content">{renderRoute(route)}</main>
       <Footer />
     </>
@@ -118,42 +163,170 @@ function renderRoute(route: Route) {
 function Header({
   route,
   navOpen,
+  forceCompactHeader,
   onToggleNav,
+  onPreserveCompactHeader,
+  onReleaseCompactHeader,
 }: {
   route: Route;
   navOpen: boolean;
+  forceCompactHeader: boolean;
   onToggleNav: () => void;
+  onPreserveCompactHeader: () => void;
+  onReleaseCompactHeader: () => void;
 }) {
   const [memberMenuOpen, setMemberMenuOpen] = useState(false);
   const [compact, setCompact] = useState(() => window.scrollY > COMPACT_ENTER_SCROLL);
+  const [forceCompact, setForceCompact] = useState(false);
+  const compactRef = useRef(compact);
+  const forceCompactRef = useRef(false);
+  const forceCompactHeaderRef = useRef(forceCompactHeader);
+  const preserveCompactOnRouteRef = useRef(false);
+  const hasSeenInitialRouteRef = useRef(false);
+
+  const setForcedCompact = (next: boolean) => {
+    forceCompactRef.current = next;
+    setForceCompact(next);
+  };
 
   useEffect(() => {
     setMemberMenuOpen(false);
   }, [route]);
 
   useEffect(() => {
+    compactRef.current = compact || forceCompact || forceCompactHeader;
+    forceCompactHeaderRef.current = forceCompactHeader;
+  }, [compact, forceCompact, forceCompactHeader]);
+
+  useLayoutEffect(() => {
+    if (!hasSeenInitialRouteRef.current) {
+      hasSeenInitialRouteRef.current = true;
+      return;
+    }
+
+    const shouldPreserveCompact =
+      !isMobileHeader() &&
+      (sessionStorage.getItem(PRESERVE_COMPACT_NAV_KEY) === '1' ||
+        sessionStorage.getItem(HEADER_COMPACT_STATE_KEY) === '1' ||
+        compactRef.current ||
+        document.querySelector('.site-header')?.classList.contains('compact'));
+
+    if (shouldPreserveCompact) {
+      preserveCompactOnRouteRef.current = true;
+      sessionStorage.setItem(HEADER_COMPACT_STATE_KEY, '1');
+      onPreserveCompactHeader();
+      setForcedCompact(true);
+      setCompact(true);
+    }
+  }, [route]);
+
+  useEffect(() => {
     const updateCompact = () => {
+      if (isMobileHeader()) {
+        preserveCompactOnRouteRef.current = false;
+        setForcedCompact(false);
+        onReleaseCompactHeader();
+        sessionStorage.setItem(HEADER_COMPACT_STATE_KEY, '0');
+        setCompact(false);
+        return;
+      }
+
       const scrollY = window.scrollY;
+      if (preserveCompactOnRouteRef.current) {
+        sessionStorage.setItem(HEADER_COMPACT_STATE_KEY, '1');
+        setForcedCompact(true);
+        if (scrollY <= COMPACT_EXIT_SCROLL) {
+          preserveCompactOnRouteRef.current = false;
+          setCompact(true);
+        }
+        return;
+      }
+
+      if ((forceCompactRef.current || forceCompactHeaderRef.current) && scrollY <= COMPACT_ENTER_SCROLL) {
+        sessionStorage.setItem(HEADER_COMPACT_STATE_KEY, '1');
+        return;
+      }
+      if (forceCompactRef.current && scrollY > COMPACT_ENTER_SCROLL) {
+        setForcedCompact(false);
+      }
+      if (forceCompactHeaderRef.current && scrollY > COMPACT_ENTER_SCROLL) {
+        onReleaseCompactHeader();
+      }
+
       setCompact((current) => {
-        if (current) return scrollY > COMPACT_EXIT_SCROLL;
-        return scrollY > COMPACT_ENTER_SCROLL;
+        const next = current ? scrollY > COMPACT_EXIT_SCROLL : scrollY > COMPACT_ENTER_SCROLL;
+        sessionStorage.setItem(HEADER_COMPACT_STATE_KEY, next ? '1' : '0');
+        return next;
       });
+    };
+    const preserveCompactOnRoute = () => {
+      const shouldPreserveCompact =
+        !isMobileHeader() &&
+        (compactRef.current ||
+          forceCompactRef.current ||
+          sessionStorage.getItem(HEADER_COMPACT_STATE_KEY) === '1' ||
+          document.querySelector('.site-header')?.classList.contains('compact'));
+
+      if (shouldPreserveCompact) {
+        preserveCompactOnRouteRef.current = true;
+        onPreserveCompactHeader();
+        setForcedCompact(true);
+        sessionStorage.setItem(HEADER_COMPACT_STATE_KEY, '1');
+        setCompact(true);
+      }
     };
     updateCompact();
     window.addEventListener('scroll', updateCompact, { passive: true });
-    return () => window.removeEventListener('scroll', updateCompact);
+    window.addEventListener('resize', updateCompact);
+    window.addEventListener('hashchange', preserveCompactOnRoute);
+    window.addEventListener('fenglab:preserve-compact-header', preserveCompactOnRoute);
+    return () => {
+      window.removeEventListener('scroll', updateCompact);
+      window.removeEventListener('resize', updateCompact);
+      window.removeEventListener('hashchange', preserveCompactOnRoute);
+      window.removeEventListener('fenglab:preserve-compact-header', preserveCompactOnRoute);
+    };
   }, []);
 
+  const preserveCompactForNavigation = () => {
+    const isCurrentlyCompact =
+      compactRef.current || document.querySelector('.site-header')?.classList.contains('compact');
+    if (!isMobileHeader() && isCurrentlyCompact) {
+      preserveCompactOnRouteRef.current = true;
+      onPreserveCompactHeader();
+      setForcedCompact(true);
+      sessionStorage.setItem(PRESERVE_COMPACT_NAV_KEY, '1');
+      sessionStorage.setItem(HEADER_COMPACT_STATE_KEY, '1');
+      setCompact(true);
+      return true;
+    }
+    return false;
+  };
+
+  const handleNavLinkClick = (event: React.MouseEvent<HTMLAnchorElement>, path: Route) => {
+    event.preventDefault();
+    preserveCompactForNavigation();
+    window.setTimeout(() => {
+      const oldURL = window.location.href;
+      const nextHash = `#${path}`;
+      if (window.location.hash !== nextHash) {
+        window.history.pushState(null, '', nextHash);
+        window.dispatchEvent(new HashChangeEvent('hashchange', { oldURL, newURL: window.location.href }));
+      }
+    }, 0);
+  };
+
   return (
-    <header className={compact ? 'site-header compact' : 'site-header'}>
+    <header className={compact || forceCompact || forceCompactHeader ? 'site-header compact' : 'site-header'}>
       <div className="header-inner">
         <a className="brand header-brand" href="#/" aria-label="Feng Lab 首页">
           <span className="brand-full">
+            <img className="header-mobile-logo" src="/logo-transparent.png" alt="" />
             <strong>Welcome to Feng Lab</strong>
             <small>核酸功能材料实验室</small>
           </span>
           <span className="brand-compact" aria-hidden="true">
-            <img className="header-compact-logo" src="/logo.jpg" alt="" />
+            <img className="header-compact-logo" src="/logo-transparent.png" alt="" />
             <span>Feng Lab</span>
           </span>
         </a>
@@ -187,16 +360,26 @@ function Header({
               </button>
               <div className="nav-dropdown-menu">
                 {item.children.map((child) => (
-                  <a key={child.path} className={route === child.path ? 'active' : ''} href={`#${child.path}`}>
-                    {child.label}
-                  </a>
+                    <a
+                      key={child.path}
+                      className={route === child.path ? 'active' : ''}
+                      href={`#${child.path}`}
+                      onClick={(event) => handleNavLinkClick(event, child.path)}
+                    >
+                      {child.label}
+                    </a>
                 ))}
               </div>
             </div>
           ) : (
-            <a key={item.path} className={route === item.path ? 'active' : ''} href={`#${item.path}`}>
-              {item.label}
-            </a>
+              <a
+                key={item.path}
+                className={route === item.path ? 'active' : ''}
+                href={`#${item.path}`}
+                onClick={(event) => handleNavLinkClick(event, item.path)}
+              >
+                {item.label}
+              </a>
           ),
         )}
       </nav>
