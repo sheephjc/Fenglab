@@ -6,7 +6,6 @@ import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
-  ExternalLink,
   GraduationCap,
   Image as ImageIcon,
   Mail,
@@ -79,7 +78,7 @@ const copy = {
     documentTitle: '北京化工大学李凤课题组',
     skipLink: '跳到主要内容',
     headerTitle: 'Welcome to Feng-Lab@BUCT',
-    headerSubtitle: '核酸功能材料实验室',
+    headerSubtitle: siteInfo.tagline,
     languageToggle: 'English',
     navLabel: '主导航',
     closeNav: '关闭导航',
@@ -88,8 +87,7 @@ const copy = {
     home: {
       title: '核酸功能材料实验室',
       intro: siteInfo.tagline,
-      body:
-        'Feng Lab 聚焦核酸功能材料、响应性分子体系与生物医用应用，围绕精准诊疗、分子识别和材料界面等方向开展交叉研究。网站将用于展示课题组研究方向、论文成果、团队成员与日常风采，也欢迎对相关方向感兴趣的同学和合作伙伴与我们联系。',
+      body: siteInfo.homeBody,
       newsTitle: '最新动态',
     },
     hero: {
@@ -103,9 +101,9 @@ const copy = {
     },
     publications: {
       selectedTitle: '代表论文',
-      selectedIntro: '替换真实论文后，建议选择 3-6 篇最能代表课题组方向的成果。',
+      selectedIntro: '',
       allTitle: '完整列表',
-      allIntro: '按年份自动分组，后续只需在数据文件中追加论文。',
+      allIntro: '',
       viewPaper: '查看论文',
     },
     members: {
@@ -121,11 +119,7 @@ const copy = {
       collaborationTitle: '招生与合作',
       note: siteInfo.contactNote,
       sendEmail: '发送邮件',
-      checkList: [
-        '邮件主题建议包含：姓名、学校/单位、申请方向或合作主题。',
-        '学生申请可附简历、成绩单、科研经历和感兴趣的研究方向。',
-        '合作交流可简要说明问题背景、已有基础和希望讨论的合作方式。',
-      ],
+      checkList: siteInfo.contactChecklist,
     },
     footer: {
       contact: '联系',
@@ -136,7 +130,7 @@ const copy = {
     documentTitle: 'Feng Lab | Beijing University of Chemical Technology',
     skipLink: 'Skip to main content',
     headerTitle: 'Welcome to Feng-Lab@BUCT',
-    headerSubtitle: 'Nucleic Acid Functional Materials Laboratory',
+    headerSubtitle: siteInfo.taglineEn,
     languageToggle: '中文',
     navLabel: 'Main navigation',
     closeNav: 'Close navigation',
@@ -144,9 +138,8 @@ const copy = {
     homeAria: 'Feng Lab home',
     home: {
       title: 'Nucleic Acid Functional Materials Laboratory',
-      intro: 'Functional molecular systems for biomedical materials and precision theranostics.',
-      body:
-        'Feng Lab develops nucleic acid functional materials, responsive molecular systems, and biomedical platforms for precision diagnosis and therapy. The website introduces our research directions, publications, members, lab life, and opportunities for students and collaborators.',
+      intro: siteInfo.taglineEn,
+      body: siteInfo.homeBodyEn,
       newsTitle: 'News',
     },
     hero: {
@@ -160,9 +153,9 @@ const copy = {
     },
     publications: {
       selectedTitle: 'Selected Publications',
-      selectedIntro: 'After real publications are added, this section can highlight 3-6 representative papers.',
+      selectedIntro: '',
       allTitle: 'Full Publication List',
-      allIntro: 'Publications are grouped by year and can be maintained from the data file.',
+      allIntro: '',
       viewPaper: 'View paper',
     },
     members: {
@@ -176,14 +169,9 @@ const copy = {
       scholar: 'Academic Profiles',
       scholarValue: 'Google Scholar / ORCID to be added',
       collaborationTitle: 'Join and Collaborate',
-      note:
-        'Students, postdoctoral researchers, and collaborators interested in functional materials, biomedical polymers, molecular imaging, and interdisciplinary research are welcome to contact us by email.',
+      note: siteInfo.contactNoteEn,
       sendEmail: 'Send email',
-      checkList: [
-        'Please include your name, institution, and intended research or collaboration topic in the email subject.',
-        'Student applicants may attach a CV, transcript, research experience, and areas of interest.',
-        'Collaboration inquiries may briefly describe the background, current basis, and preferred discussion format.',
-      ],
+      checkList: siteInfo.contactChecklistEn,
     },
     footer: {
       contact: 'Contact',
@@ -192,249 +180,22 @@ const copy = {
   },
 };
 
-const englishHeroSlides = [
-  {
-    title: '2026 Feng Group',
-    alt: '2026 Feng Group photo',
-    caption: '2026 Feng Group',
-  },
-  {
-    title: 'Representative Research Output',
-    alt: 'Representative publication figure placeholder',
-    caption: 'Publication figure placeholder; replace with real published results later.',
-  },
-  {
-    title: 'Life in Feng Lab',
-    alt: 'Lab life placeholder',
-    caption: 'Lab life placeholder; replace with real activity photos later.',
-  },
-];
+function localizedText(zh: string, en: string | undefined, language: Language) {
+  return language === 'en' && en ? en : zh;
+}
 
-const englishResearchDirections: Record<
-  string,
-  Pick<ResearchDirection, 'title' | 'summary' | 'detail' | 'keywords'>
-> = {
-  'responsive-biomaterials': {
-    title: 'Responsive Biomedical Materials',
-    summary:
-      'Designing controllable functional materials that assemble, release, and degrade in response to disease microenvironments and external stimuli.',
-    detail:
-      'This direction highlights the scientific questions, molecular design strategies, material platforms, and biomedical applications of responsive systems. Mechanistic schemes and publication figures can be added later to connect the problem, strategy, and application.',
-    keywords: ['Polymeric materials', 'Stimuli response', 'Drug delivery', 'Biointerfaces'],
-  },
-  'molecular-imaging': {
-    title: 'Molecular Probes and Theranostics',
-    summary:
-      'Developing molecular probes and multifunctional diagnostic platforms for disease detection, therapy, and response evaluation.',
-    detail:
-      'This direction can feature fluorescence, photoacoustic, radioactive, magnetic resonance, or multimodal imaging work, with emphasis on how probe design supports disease detection and precision treatment.',
-    keywords: ['Molecular probes', 'Multimodal imaging', 'Theranostics', 'Precision medicine'],
-  },
-  'interfaces-translation': {
-    title: 'Material Interfaces and Translational Applications',
-    summary:
-      'Studying interactions between materials, cells, tissues, and complex biological environments to support translational applications.',
-    detail:
-      'This direction can include collaborative projects, instrument platforms, animal studies, or translational work, helping visitors understand how material systems are advanced toward real application scenarios.',
-    keywords: ['Material interfaces', 'Cell interactions', 'Tissue repair', 'Translational research'],
-  },
-};
+function localizedList(zh: string[], en: string[] | undefined, language: Language) {
+  return language === 'en' && en?.length ? en : zh;
+}
 
-const englishPublications: Partial<Publication>[] = [
-  {
-    title: 'Placeholder paper: Responsive polymeric materials for precision delivery',
-    journal: 'Journal / DOI to be added',
-    note: 'Representative paper placeholder. A publication figure or TOC image can be kept here.',
-    tags: ['Selected paper', 'Biomedical materials'],
-  },
-  {
-    title: 'Placeholder paper: Visual molecular probes for disease microenvironment detection',
-    journal: 'Journal / DOI to be added',
-    tags: ['Selected paper', 'Molecular imaging'],
-  },
-  {
-    title: 'Placeholder paper: Biointerface-regulating material systems',
-    journal: 'Journal / DOI to be added',
-    tags: ['Selected paper', 'Material interfaces'],
-  },
-  {
-    title: 'Placeholder paper: Nanomaterial assembly and functional enhancement',
-    journal: 'Journal / DOI to be added',
-    tags: ['Nanomaterials'],
-  },
-  {
-    title: 'Placeholder paper: Structure-property relationships in functional molecular systems',
-    journal: 'Journal / DOI to be added',
-    tags: ['Functional molecules'],
-  },
-  {
-    title: 'Placeholder paper: Polymer platforms for biological applications',
-    journal: 'Journal / DOI to be added',
-    tags: ['Polymers'],
-  },
-];
-
-const englishMemberSections: MemberSection[] = [
-  {
-    title: 'Faculty',
-    intro: 'Information for the PI, collaborating faculty, and permanent research staff.',
-    groups: [
-      {
-        label: 'Faculty',
-        members: [
-          {
-            name: 'Prof. Feng Li',
-            role: 'Principal Investigator',
-            education: 'Education and professional experience to be added',
-            research: 'Functional molecular systems, biomedical materials, and precision theranostics',
-            email: 'fenglab@example.edu.cn',
-            image: '/images/avatar-teacher-placeholder.png',
-          },
-        ],
-      },
-    ],
-  },
-  {
-    title: 'Current Students',
-    intro: 'Current members are grouped by postdoctoral fellows, PhD students, and master students.',
-    groups: [
-      {
-        label: 'Postdoctoral Fellows',
-        members: [
-          {
-            name: 'Postdoctoral fellow placeholder',
-            role: 'Postdoctoral Fellow',
-            education: 'PhD institution to be added',
-            research: 'Research direction to be added',
-            image: '/images/avatar-researcher-placeholder.png',
-          },
-        ],
-      },
-      {
-        label: 'PhD Students',
-        members: [
-          {
-            name: 'PhD student placeholder A',
-            role: 'PhD Student',
-            education: 'Enrollment year to be added',
-            research: 'Research direction to be added',
-            image: '/images/avatar-student-placeholder.png',
-          },
-          {
-            name: 'PhD student placeholder B',
-            role: 'PhD Student',
-            education: 'Enrollment year to be added',
-            research: 'Research direction to be added',
-            image: '/images/avatar-student-placeholder.png',
-          },
-        ],
-      },
-      {
-        label: 'Master Students',
-        members: [
-          {
-            name: 'Master student placeholder A',
-            role: 'Master Student',
-            education: 'Enrollment year to be added',
-            research: 'Research direction to be added',
-            image: '/images/avatar-student-placeholder.png',
-          },
-          {
-            name: 'Master student placeholder B',
-            role: 'Master Student',
-            education: 'Enrollment year to be added',
-            research: 'Research direction to be added',
-            image: '/images/avatar-student-placeholder.png',
-          },
-          {
-            name: 'Master student placeholder C',
-            role: 'Master Student',
-            education: 'Enrollment year to be added',
-            research: 'Research direction to be added',
-            image: '/images/avatar-student-placeholder.png',
-          },
-        ],
-      },
-    ],
-  },
-  {
-    title: 'Alumni',
-    intro: 'Former students and their graduation years or career destinations can be recorded here.',
-    groups: [
-      {
-        label: 'Alumni',
-        members: [
-          {
-            name: 'Alumnus placeholder',
-            role: 'Graduation year / destination to be added',
-            research: 'Thesis topic or research direction to be added',
-            image: '/images/avatar-alumni-placeholder.png',
-          },
-        ],
-      },
-    ],
-  },
-];
-
-const englishGalleryItems: GalleryItem[] = [
-  {
-    title: 'Group Photo',
-    date: '2026',
-    description: 'Group photos can be used to show the team and updated each year.',
-    image: '/images/gallery-group-placeholder.png',
-    alt: 'Group photo placeholder',
-  },
-  {
-    title: 'Academic Conferences',
-    date: '2026',
-    description: 'Talks, posters, conference discussions, and awards can be recorded here.',
-    image: '/images/gallery-conference-placeholder.png',
-    alt: 'Academic conference placeholder',
-  },
-  {
-    title: 'Lab Life',
-    date: '2026',
-    description: 'Experiments, group meetings, discussions, and instrument platforms.',
-    image: '/images/gallery-lab-placeholder.png',
-    alt: 'Lab life placeholder',
-  },
-  {
-    title: 'Publication Highlights',
-    date: '2026',
-    description: 'Cover images, TOC figures, and representative research outputs can be shown here.',
-    image: '/images/gallery-paper-placeholder.png',
-    alt: 'Publication highlight placeholder',
-  },
-];
-
-const englishNewsItems: NewsItem[] = [
-  {
-    date: '2026-06',
-    title: 'Feng Lab website construction started',
-    description: 'Research content, member information, and publication records will be added step by step.',
-  },
-  {
-    date: '2026-05',
-    title: 'Students interested in interdisciplinary research are welcome to contact us',
-    description: 'Students with backgrounds in chemistry, materials, biomedical science, or related fields are welcome.',
-  },
-  {
-    date: '2026-04',
-    title: 'Representative publications and figures to be updated',
-    description: 'Publication records can be maintained in the data file and highlighted on the homepage.',
-  },
-];
-
-const englishRelatedLinks: RelatedLink[] = [
-  { label: 'Beijing University of Chemical Technology', url: 'https://www.buct.edu.cn/main.htm' },
-  { label: 'College of Chemistry, BUCT', url: 'https://chemistry.buct.edu.cn/main.htm' },
-];
-
-function getHeroSlide(slide: HeroSlide, index: number, language: Language): HeroSlide {
+function getHeroSlide(slide: HeroSlide, _index: number, language: Language): HeroSlide {
   if (language === 'zh') return slide;
   return {
     ...slide,
-    ...englishHeroSlides[index],
+    title: localizedText(slide.title, slide.titleEn, language),
+    description: localizedText(slide.description, slide.descriptionEn, language),
+    alt: localizedText(slide.alt, slide.altEn, language),
+    caption: localizedText(slide.caption, slide.captionEn, language),
   };
 }
 
@@ -442,32 +203,64 @@ function getResearchDirection(direction: ResearchDirection, language: Language):
   if (language === 'zh') return direction;
   return {
     ...direction,
-    ...englishResearchDirections[direction.id],
+    title: localizedText(direction.title, direction.titleEn, language),
+    summary: localizedText(direction.summary, direction.summaryEn, language),
+    detail: localizedText(direction.detail, direction.detailEn, language),
+    keywords: localizedList(direction.keywords, direction.keywordsEn, language),
   };
 }
 
-function getPublication(publication: Publication, index: number, language: Language): Publication {
-  if (language === 'zh') return publication;
+function getPublication(publication: Publication, _index: number, _language: Language): Publication {
+  return publication;
+}
+
+function getMemberSection(section: MemberSection, _index: number, language: Language): MemberSection {
+  if (language === 'zh') return section;
   return {
-    ...publication,
-    ...englishPublications[index],
+    ...section,
+    title: localizedText(section.title, section.titleEn, language),
+    intro: localizedText(section.intro, section.introEn, language),
+    groups: section.groups.map((group) => ({
+      ...group,
+      label: localizedText(group.label, group.labelEn, language),
+      members: group.members.map((member) => ({
+        ...member,
+        name: localizedText(member.name, member.nameEn, language),
+        role: localizedText(member.role, member.roleEn, language),
+        education: member.education
+          ? localizedText(member.education, member.educationEn, language)
+          : member.educationEn,
+        research: member.research ? localizedText(member.research, member.researchEn, language) : member.researchEn,
+      })),
+    })),
   };
 }
 
-function getMemberSection(section: MemberSection, index: number, language: Language): MemberSection {
-  return language === 'zh' ? section : englishMemberSections[index] ?? section;
-}
-
-function getGalleryItem(item: GalleryItem, index: number, language: Language): GalleryItem {
-  return language === 'zh' ? item : englishGalleryItems[index] ?? item;
+function getGalleryItem(item: GalleryItem, _index: number, language: Language): GalleryItem {
+  if (language === 'zh') return item;
+  return {
+    ...item,
+    title: localizedText(item.title, item.titleEn, language),
+    description: localizedText(item.description, item.descriptionEn, language),
+    alt: localizedText(item.alt, item.altEn, language),
+  };
 }
 
 function getNewsItems(language: Language): NewsItem[] {
-  return language === 'zh' ? newsItems : englishNewsItems;
+  if (language === 'zh') return newsItems;
+  return newsItems.map((item) => ({
+    ...item,
+    title: localizedText(item.title, item.titleEn, language),
+    description: localizedText(item.description, item.descriptionEn, language),
+  }));
 }
 
 function getRelatedLinks(language: Language): RelatedLink[] {
-  return language === 'zh' ? relatedLinks : englishRelatedLinks;
+  if (language === 'zh') return relatedLinks;
+  return relatedLinks.map((link) => ({
+    ...link,
+    label: localizedText(link.label, link.labelEn, language),
+  }));
 }
 
 function isMobileHeader() {
@@ -754,12 +547,12 @@ function Header({
       <div className="header-inner">
         <a className="brand header-brand" href="#/" aria-label={t.homeAria}>
           <span className="brand-full">
-            <img className="header-mobile-logo" src="/logo-transparent.png" alt="" />
+            <img className="header-mobile-logo" src={siteInfo.logo} alt="" />
             <strong>{t.headerTitle}</strong>
             <small>{t.headerSubtitle}</small>
           </span>
           <span className="brand-compact" aria-hidden="true">
-            <img className="header-compact-logo" src="/logo-transparent.png" alt="" />
+            <img className="header-compact-logo" src={siteInfo.logo} alt="" />
             <span>Feng Lab</span>
           </span>
         </a>
@@ -959,7 +752,7 @@ function FeaturedPublications({ publications: featuredPublications }: { publicat
         />
         <div className="paper-feature-grid">
           {featuredPublications.map((publication) => (
-            <PaperCard key={publication.title} publication={publication} compact />
+            <PaperCard key={publication.titleEn || publication.title} publication={publication} compact />
           ))}
         </div>
         <div className="section-action">
@@ -1042,7 +835,7 @@ function PublicationsPage({ language }: { language: Language }) {
     () => publications.map((publication, index) => getPublication(publication, index, language)),
     [language],
   );
-  const featuredPapers = displayedPublications.filter((publication) => publication.featured);
+  const featuredPapers = displayedPublications.filter((publication) => publication.featured).slice(0, 4);
   const groupedPublications = useMemo(() => {
     return displayedPublications.reduce<Record<number, Publication[]>>((groups, publication) => {
       groups[publication.year] = [...(groups[publication.year] ?? []), publication];
@@ -1056,17 +849,17 @@ function PublicationsPage({ language }: { language: Language }) {
   return (
     <>
       <section className="section section-white">
-        <div className="container">
+        <div className="container publication-container">
           <SectionTitle title={t.selectedTitle} intro={t.selectedIntro} />
           <div className="paper-feature-grid">
             {featuredPapers.map((publication) => (
-              <PaperCard key={publication.title} publication={publication} language={language} />
+              <PaperCard key={publication.titleEn || publication.title} publication={publication} />
             ))}
           </div>
         </div>
       </section>
-      <section className="section section-soft">
-        <div className="container">
+      <section className="section section-white publications-all-section">
+        <div className="container publication-container">
           <SectionTitle title={t.allTitle} intro={t.allIntro} />
           <div className="publication-years">
             {years.map((year) => (
@@ -1074,7 +867,7 @@ function PublicationsPage({ language }: { language: Language }) {
                 <h2 id={`year-${year}`}>{year}</h2>
                 <div className="publication-list">
                   {groupedPublications[year].map((publication) => (
-                    <PaperListItem key={publication.title} publication={publication} />
+                    <PaperListItem key={publication.titleEn || publication.title} publication={publication} />
                   ))}
                 </div>
               </section>
@@ -1106,31 +899,39 @@ function MembersPage({ view, language }: { view: 'current' | 'alumni'; language:
             >
               <div className="member-section-head">
                 <h2 id={`member-${displaySection.title}`}>{displaySection.title}</h2>
-                <p>{displaySection.intro}</p>
+                {displaySection.intro && <p>{displaySection.intro}</p>}
               </div>
-              {displaySection.groups.map((group) => (
-                <div className="member-group" key={group.label}>
-                  <h3>{group.label}</h3>
-                  <div className="member-grid">
-                    {group.members.map((member) => (
-                      <article className="member-card" key={`${group.label}-${member.name}`}>
-                        <SmartImage src={member.image} alt={member.name} className="member-photo" />
-                        <div className="member-info">
-                          <h4>{member.name}</h4>
-                          <p className="member-role">{member.role}</p>
-                          {member.education && <p>{member.education}</p>}
-                          {member.research && <p>{member.research}</p>}
-                          {member.email && (
-                            <a className="inline-link" href={`mailto:${member.email}`}>
-                              {member.email}
-                            </a>
-                          )}
-                        </div>
-                      </article>
-                    ))}
+              {displaySection.groups.map((group) => {
+                const isFacultyGroup = group.members.some((member) => member.isFaculty);
+
+                return (
+                  <div className="member-group" key={group.label}>
+                    <h3>{group.label}</h3>
+                    <div className={isFacultyGroup ? 'faculty-list' : 'student-grid'}>
+                      {group.members.map((member) =>
+                        member.isFaculty ? (
+                          <article className="faculty-card" key={`${group.label}-${member.name}`}>
+                            <SmartImage src={member.image} alt={member.name} className="faculty-photo" />
+                            <div className="faculty-info">
+                              <h4>{member.name}</h4>
+                              <p className="member-role">{member.role}</p>
+                              {member.research && <p>{member.research}</p>}
+                            </div>
+                          </article>
+                        ) : (
+                          <article className="student-card" key={`${group.label}-${member.name}`}>
+                            <SmartImage src={member.image} alt={member.name} className="student-photo" />
+                            <div className="student-info">
+                              <h4>{member.name}</h4>
+                              {member.education && <p>{member.education}</p>}
+                            </div>
+                          </article>
+                        ),
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </section>
           );
         })}
@@ -1164,10 +965,11 @@ function GalleryPage({ language }: { language: Language }) {
 
 function ContactPage({ language }: { language: Language }) {
   const t = copy[language].contact;
-  const address =
-    language === 'zh'
-      ? siteInfo.address
-      : '15 Beisanhuan East Road, Chaoyang District, Beijing\nRoom 108, Huaxin Building, East Campus, Beijing University of Chemical Technology';
+  const address = language === 'zh' ? siteInfo.address : siteInfo.addressEn;
+  const institution = language === 'zh' ? siteInfo.institution : siteInfo.institutionEn;
+  const office = language === 'zh' ? siteInfo.office : siteInfo.officeEn;
+  const lab = language === 'zh' ? siteInfo.lab : siteInfo.labEn;
+  const mapImage = language === 'zh' ? siteInfo.mapImage : siteInfo.mapImageEn;
 
   return (
     <section className="section section-white">
@@ -1192,11 +994,11 @@ function ContactPage({ language }: { language: Language }) {
           </a>
         </div>
         <div className="map-panel">
-          <SmartImage src="/images/contact-map-placeholder.png" alt="Feng Lab address map placeholder" className="map-image" />
+          <SmartImage src={mapImage} alt="Feng Lab address map placeholder" className="map-image" />
           <div>
-            <h3>{language === 'zh' ? siteInfo.institution : 'Feng Lab, Beijing University of Chemical Technology'}</h3>
-            <p>{language === 'zh' ? siteInfo.office : '15 Beisanhuan East Road, Chaoyang District, Beijing'}</p>
-            <p>{language === 'zh' ? siteInfo.lab : 'Room 108, Huaxin Building, East Campus'}</p>
+            <h3>{institution}</h3>
+            <p>{office}</p>
+            <p>{lab}</p>
           </div>
         </div>
       </div>
@@ -1226,11 +1028,11 @@ function ContactBand() {
   );
 }
 
-function SectionTitle({ title, intro }: { eyebrow?: string; title: string; intro: string }) {
+function SectionTitle({ title, intro }: { eyebrow?: string; title: string; intro?: string }) {
   return (
     <div className="section-title">
       <h2>{title}</h2>
-      <p>{intro}</p>
+      {intro && <p>{intro}</p>}
     </div>
   );
 }
@@ -1247,54 +1049,69 @@ function Metric({ value, label }: { value: string; label: string }) {
 function PaperCard({
   publication,
   compact = false,
-  language = 'zh',
 }: {
   publication: Publication;
   compact?: boolean;
-  language?: Language;
 }) {
-  const t = copy[language].publications;
+  const className = compact ? 'paper-card compact' : 'paper-card';
+  const mainTitle = publication.titleEn || publication.title;
+  const subtitle = publication.titleEn ? publication.title : undefined;
 
-  return (
-    <article className={compact ? 'paper-card compact' : 'paper-card'}>
-      {publication.image && <SmartImage src={publication.image} alt={publication.title} className="paper-image" />}
+  const content = (
+    <>
+      <SmartImage src={publication.image ?? ''} alt={mainTitle} className="paper-image" />
       <div className="paper-body">
         <p className="paper-meta">
           <CalendarDays size={16} />
           {publication.year} · {publication.journal}
         </p>
-        <h3>{publication.title}</h3>
+        <h3>{mainTitle}</h3>
+        {subtitle && <p className="paper-title-zh">{subtitle}</p>}
         <p className="paper-authors">{publication.authors}</p>
-        {publication.note && <p>{publication.note}</p>}
-        <div className="tag-list">
-          {publication.tags.map((tag) => (
-            <span key={tag}>{tag}</span>
-          ))}
-        </div>
-        {publication.url && (
-          <a className="inline-link" href={publication.url} target="_blank" rel="noreferrer">
-            {t.viewPaper}
-            <ExternalLink size={15} />
-          </a>
-        )}
       </div>
+    </>
+  );
+
+  if (publication.url) {
+    return (
+      <a className={className} href={publication.url} target="_blank" rel="noreferrer">
+        {content}
+      </a>
+    );
+  }
+
+  return (
+    <article className={className}>
+      {content}
     </article>
   );
 }
 
 function PaperListItem({ publication }: { publication: Publication }) {
-  return (
-    <article className="paper-list-item">
+  const mainTitle = publication.titleEn || publication.title;
+  const subtitle = publication.titleEn ? publication.title : undefined;
+  const content = (
+    <>
       <div>
-        <h3>{publication.title}</h3>
+        <h3>{mainTitle}</h3>
+        {subtitle && <p className="paper-title-zh">{subtitle}</p>}
         <p>{publication.authors}</p>
         <p className="paper-journal">{publication.journal}</p>
       </div>
-      <div className="tag-list">
-        {publication.tags.map((tag) => (
-          <span key={tag}>{tag}</span>
-        ))}
-      </div>
+    </>
+  );
+
+  if (publication.url) {
+    return (
+      <a className="paper-list-item paper-list-link" href={publication.url} target="_blank" rel="noreferrer">
+        {content}
+      </a>
+    );
+  }
+
+  return (
+    <article className="paper-list-item">
+      {content}
     </article>
   );
 }
@@ -1365,18 +1182,15 @@ function SmartImage({
 function Footer({ language }: { language: Language }) {
   const t = copy[language].footer;
   const links = getRelatedLinks(language);
-  const institution = language === 'zh' ? siteInfo.institution : 'Feng Lab, Beijing University of Chemical Technology';
-  const address =
-    language === 'zh'
-      ? siteInfo.address
-      : '15 Beisanhuan East Road, Chaoyang District, Beijing\nRoom 108, Huaxin Building, East Campus';
+  const institution = language === 'zh' ? siteInfo.institution : siteInfo.institutionEn;
+  const address = language === 'zh' ? siteInfo.address : siteInfo.addressEn;
 
   return (
     <footer className="site-footer">
       <div className="container footer-grid">
         <div>
           <a className="brand footer-brand" href="#/" aria-label={copy[language].homeAria}>
-            <img className="brand-logo" src="/logo.jpg" alt="Feng Lab logo" />
+            <img className="brand-logo" src={siteInfo.logo} alt="Feng Lab logo" />
             <span>
               <strong>{siteInfo.name}</strong>
               <small>{copy[language].headerSubtitle}</small>

@@ -19,14 +19,16 @@ npm.cmd run build
 
 ## 更新内容
 
-主要内容集中在 `src/data/siteData.ts`：
+主要内容改 `src/data/csv` 里的表格，页面会通过 `src/data/siteData.ts` 统一读取：
 
-- `siteInfo`：站点名称、单位、邮箱、地址、联系方式
-- `heroSlides`：首页大图轮播
-- `researchDirections`：研究方向
-- `publications`：代表论文和完整论文列表
-- `memberSections`：教师、现有学生、以往学生
-- `galleryItems`：课题组风采
-- `newsItems`：首页动态
+- `home.csv`：首页轮播图、首页新闻
+- `research.csv`：研究方向
+- `publications.csv`：论文列表、代表论文和成果图。列为 `year`、`title_zh`、`title_en`、`authors`、`journal`、`image`、`featured`、`url`；`image` 只写 `public/images/publications` 里的文件名，`featured` 推荐写 `yes/no`。
+- `members.csv`：当前成员、以往学生、头像和教师简介。列为 `status`、`identity`、`name`、`study_years`、`photo`、`faculty_intro`；`name` 可写成 `胡锦程，Jincheng Hu`，`photo` 只写 `public/images/members` 里的文件名。
+- `gallery.csv`：课题组风采图片
+- `contact.csv`：站点信息、首页简介、联系方式
+- `links.csv`：底部相关链接
 
-图片放在 `public/images`。替换真实合照、论文成果图或成员头像时，保持文件路径或同步修改数据文件里的 `image` 字段即可。
+图片放在 `public/images` 的分类目录中，例如 `public/images/home`、`public/images/members`、`public/images/publications`。CSV 里的图片路径写公开路径，例如 `/images/members/li-feng.jpg`。
+
+不要手动改 `dist` 里的内容，`dist` 是 `npm.cmd run build` 生成的构建产物，重新构建或部署时会被覆盖。

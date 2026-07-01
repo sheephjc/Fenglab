@@ -86,6 +86,10 @@ button {
   margin: 0 auto;
 }
 
+.publication-container {
+  width: min(1320px, calc(100% - 32px));
+}
+
 #main-content,
 .site-footer {
   width: min(1280px, calc(100% - 56px));
@@ -666,6 +670,8 @@ button {
 .research-card,
 .paper-card,
 .member-card,
+.faculty-card,
+.student-card,
 .gallery-card,
 .contact-item,
 .map-panel,
@@ -678,6 +684,8 @@ button {
 .research-card,
 .paper-card,
 .member-card,
+.faculty-card,
+.student-card,
 .gallery-card {
   overflow: hidden;
   transition:
@@ -689,6 +697,8 @@ button {
 .research-card:hover,
 .paper-card:hover,
 .member-card:hover,
+.faculty-card:hover,
+.student-card:hover,
 .gallery-card:hover {
   transform: translateY(-3px);
   border-color: rgba(40, 81, 127, 0.24);
@@ -701,6 +711,14 @@ button {
   width: 100%;
   height: 210px;
   object-fit: cover;
+}
+
+.paper-image {
+  height: 300px;
+  object-fit: contain;
+  object-position: center;
+  padding: 18px;
+  background: #f7fbff;
 }
 
 .card-body,
@@ -724,6 +742,8 @@ button {
 .gallery-copy h2,
 .contact-copy h2,
 .member-info h4,
+.faculty-info h4,
+.student-info h4,
 .member-group h3 {
   margin: 0;
   color: var(--ink);
@@ -741,6 +761,8 @@ button {
 .news-item p,
 .paper-list-item p,
 .gallery-copy p,
+.faculty-info p,
+.student-info p,
 .member-info p {
   color: var(--muted);
   line-height: 1.7;
@@ -783,12 +805,20 @@ button {
 
 .paper-feature-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 22px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
 }
 
 .paper-card.compact .paper-image {
-  height: 190px;
+  height: 240px;
+  padding: 16px;
+}
+
+.paper-card,
+.paper-list-item {
+  display: block;
+  color: inherit;
+  text-decoration: none;
 }
 
 .paper-meta {
@@ -803,6 +833,13 @@ button {
 
 .paper-authors {
   margin-bottom: 8px;
+}
+
+.paper-title-zh {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.6;
 }
 
 .news-list {
@@ -890,6 +927,10 @@ button {
   gap: 36px;
 }
 
+.publications-all-section {
+  border-top: 1px solid #e5edf5;
+}
+
 .publication-year {
   display: grid;
   grid-template-columns: 110px minmax(0, 1fr);
@@ -910,9 +951,7 @@ button {
 }
 
 .paper-list-item {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 20px;
+  display: block;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: #fff;
@@ -958,6 +997,69 @@ button {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 20px;
+}
+
+.faculty-list {
+  display: grid;
+  gap: 22px;
+  max-width: 780px;
+  margin: 0 auto;
+}
+
+.faculty-card {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr);
+  align-items: center;
+  gap: 28px;
+}
+
+.faculty-photo {
+  width: 180px;
+  height: 220px;
+  object-fit: cover;
+}
+
+.faculty-info {
+  min-width: 0;
+  padding: 24px 28px 24px 0;
+}
+
+.faculty-info h4 {
+  font-size: 22px;
+}
+
+.faculty-info p {
+  margin: 10px 0 0;
+}
+
+.student-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  justify-items: start;
+  gap: 24px;
+}
+
+.student-card {
+  width: 100%;
+  max-width: 260px;
+}
+
+.student-photo {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.student-info {
+  padding: 14px 16px 16px;
+}
+
+.student-info h4 {
+  font-size: 18px;
+}
+
+.student-info p {
+  margin: 8px 0 0;
 }
 
 .member-card {
@@ -1308,7 +1410,8 @@ button {
 
   .card-grid.three,
   .paper-feature-grid,
-  .member-grid {
+  .member-grid,
+  .student-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -1488,6 +1591,7 @@ button {
   .card-grid.three,
   .paper-feature-grid,
   .member-grid,
+  .student-grid,
   .gallery-grid,
   .map-panel,
   .footer-grid {
@@ -1501,9 +1605,27 @@ button {
   .news-item,
   .publication-year,
   .paper-list-item,
+  .faculty-card,
   .member-card,
   .contact-band-inner {
     grid-template-columns: 1fr;
+  }
+
+  .faculty-list {
+    max-width: none;
+  }
+
+  .faculty-info {
+    padding: 18px;
+  }
+
+  .faculty-photo {
+    width: 100%;
+    height: 250px;
+  }
+
+  .student-card {
+    max-width: none;
   }
 
   .member-photo {

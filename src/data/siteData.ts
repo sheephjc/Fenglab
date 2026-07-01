@@ -1,10 +1,22 @@
+import contactCsv from './csv/contact.csv?raw';
+import galleryCsv from './csv/gallery.csv?raw';
+import homeCsv from './csv/home.csv?raw';
+import linksCsv from './csv/links.csv?raw';
+import membersCsv from './csv/members.csv?raw';
+import publicationsCsv from './csv/publications.csv?raw';
+import researchCsv from './csv/research.csv?raw';
+
 export type HeroSlide = {
   eyebrow: string;
   title: string;
+  titleEn?: string;
   description: string;
+  descriptionEn?: string;
   image: string;
   alt: string;
+  altEn?: string;
   caption: string;
+  captionEn?: string;
 };
 
 export type ResearchDirection = {
@@ -12,355 +24,431 @@ export type ResearchDirection = {
   title: string;
   titleEn: string;
   summary: string;
+  summaryEn?: string;
   detail: string;
+  detailEn?: string;
   keywords: string[];
+  keywordsEn?: string[];
   image: string;
 };
 
 export type Publication = {
   year: number;
   title: string;
+  titleEn?: string;
   authors: string;
   journal: string;
   featured: boolean;
   image?: string;
-  note?: string;
   url?: string;
-  tags: string[];
 };
 
 export type Member = {
   name: string;
+  nameEn?: string;
   role: string;
+  roleEn?: string;
   education?: string;
+  educationEn?: string;
   research?: string;
+  researchEn?: string;
   email?: string;
   image: string;
+  identity?: string;
+  status?: 'current' | 'alumni';
+  isFaculty?: boolean;
+  isAlumni?: boolean;
 };
 
 export type MemberGroup = {
   label: string;
+  labelEn?: string;
   members: Member[];
 };
 
 export type MemberSection = {
   title: string;
+  titleEn?: string;
   intro: string;
+  introEn?: string;
   groups: MemberGroup[];
 };
 
 export type GalleryItem = {
   title: string;
+  titleEn?: string;
   date: string;
   description: string;
+  descriptionEn?: string;
   image: string;
   alt: string;
+  altEn?: string;
 };
 
 export type NewsItem = {
   date: string;
   title: string;
+  titleEn?: string;
   description: string;
+  descriptionEn?: string;
 };
 
 export type RelatedLink = {
   label: string;
+  labelEn?: string;
   url: string;
 };
 
-export const siteInfo = {
-  name: 'Feng Lab',
-  chineseName: '李凤课题组',
-  tagline: '面向生物医用材料与精准诊疗的功能分子系统',
-  taglineEn: 'Nucleic Acid Functional Materials Laboratory',
-  institution: '北京化工大学李凤课题组',
-  pi: '李凤教授',
-  email: 'fenglab@example.edu.cn',
-  phone: '000-0000-0000',
-  address: '北京市朝阳区北三环东路15号\n北京化工大学东校区化新楼108室',
-  office: '北京市朝阳区北三环东路15号',
-  lab: '北京化工大学东校区化新楼108室',
-  googleScholar: 'https://scholar.google.com/',
-  contactNote:
-    '欢迎对功能材料、生物医用高分子、分子影像和交叉学科研究感兴趣的本科生、研究生与博士后邮件联系。',
+type CsvRow = Record<string, string>;
+
+type ContactMap = Record<string, { zh: string; en: string }>;
+
+type OrderedMember = Member & {
+  order: number;
 };
 
-export const relatedLinks: RelatedLink[] = [
-  {
-    label: '北京化工大学',
-    url: 'https://www.buct.edu.cn/main.htm',
-  },
-  {
-    label: '北京化工大学化学学院',
-    url: 'https://chemistry.buct.edu.cn/main.htm',
-  },
-];
+type OrderedMemberGroup = Omit<MemberGroup, 'members'> & {
+  order: number;
+  members: OrderedMember[];
+};
 
-export const heroSlides: HeroSlide[] = [
-  {
-    eyebrow: 'Research Group',
-    title: '从分子设计到生物医用材料',
-    description:
-      'Feng Lab 关注功能分子、响应性材料与精准诊疗交叉方向，致力于建立可被临床问题牵引的材料化学研究体系。',
-    image: '/images/hero1-2026%20Feng%20Group.png',
-    alt: 'Feng Lab 课题组合照占位图',
-    caption: '2026 Feng Group',
-  },
-  {
-    eyebrow: 'Publications',
-    title: '以代表性成果连接基础研究与应用场景',
-    description:
-      '首页轮播可展示论文图、TOC 图、封面图或重要成果示意图，让访问者快速理解课题组的研究亮点。',
-    image: '/images/hero-paper-placeholder.png',
-    alt: '论文成果图占位图',
-    caption: '论文成果图占位，后续替换为真实发表成果',
-  },
-  {
-    eyebrow: 'Life in Lab',
-    title: '开放、认真、互相支持的科研氛围',
-    description:
-      '课题组风采用于展示会议交流、组会讨论、实验室日常和毕业合影，帮助学生和合作伙伴了解真实团队状态。',
-    image: '/images/hero-lab-placeholder.png',
-    alt: '实验室风采占位图',
-    caption: '实验室风采占位，后续替换为真实活动照片',
-  },
-];
+type OrderedMemberSection = Omit<MemberSection, 'groups'> & {
+  order: number;
+  groups: OrderedMemberGroup[];
+};
 
-export const researchDirections: ResearchDirection[] = [
-  {
-    id: 'responsive-biomaterials',
-    title: '响应性生物医用材料',
-    titleEn: 'Responsive Biomaterials',
-    summary: '围绕疾病微环境和外源刺激，设计可控组装、释放与降解的功能材料。',
-    detail:
-      '初版可放置该方向的研究背景、关键科学问题、材料体系和代表性应用。建议后续补充 1-2 张机制图或论文 TOC 图，形成“问题-策略-应用”的叙事。',
-    keywords: ['高分子材料', '刺激响应', '药物递送', '生物界面'],
-    image: '/images/research-materials-placeholder.png',
-  },
-  {
-    id: 'molecular-imaging',
-    title: '分子诊疗探针与成像',
-    titleEn: 'Molecular Imaging & Theranostics',
-    summary: '发展面向诊断、治疗和疗效评估的分子探针与多功能诊疗平台。',
-    detail:
-      '该方向适合突出荧光、光声、放射、磁共振或多模态成像相关成果，并说明探针设计如何服务于疾病检测和精准治疗。',
-    keywords: ['分子探针', '多模态成像', '诊疗一体化', '精准医学'],
-    image: '/images/research-imaging-placeholder.png',
-  },
-  {
-    id: 'interfaces-translation',
-    title: '材料界面与转化应用',
-    titleEn: 'Interfaces & Translation',
-    summary: '研究材料与细胞、组织及复杂生物环境的相互作用，推动应用转化。',
-    detail:
-      '该方向可承接合作项目、仪器平台、动物实验或产业转化内容，帮助访问者理解课题组如何把材料体系推进到真实应用场景。',
-    keywords: ['材料界面', '细胞互作', '组织修复', '转化研究'],
-    image: '/images/research-interface-placeholder.png',
-  },
-];
+function parseCsv(source: string): CsvRow[] {
+  const rows: string[][] = [];
+  let row: string[] = [];
+  let field = '';
+  let inQuotes = false;
 
-export const publications: Publication[] = [
-  {
-    year: 2026,
-    title: '论文题目占位：响应性高分子材料用于精准递送',
-    authors: 'Feng Lab members, Collaborators, F. Feng*',
-    journal: 'Journal / DOI 待补充',
-    featured: true,
-    image: '/images/publication-1-placeholder.png',
-    note: '代表论文占位，替换时建议保留论文图或 TOC 图。',
-    tags: ['代表论文', '生物医用材料'],
-  },
-  {
-    year: 2026,
-    title: '论文题目占位：可视化分子探针与疾病微环境检测',
-    authors: 'Feng Lab members, F. Feng*',
-    journal: 'Journal / DOI 待补充',
-    featured: true,
-    image: '/images/publication-2-placeholder.png',
-    tags: ['代表论文', '分子成像'],
-  },
-  {
-    year: 2025,
-    title: '论文题目占位：生物界面调控材料体系',
-    authors: 'Feng Lab members, Collaborators, F. Feng*',
-    journal: 'Journal / DOI 待补充',
-    featured: true,
-    image: '/images/publication-3-placeholder.png',
-    tags: ['代表论文', '材料界面'],
-  },
-  {
-    year: 2025,
-    title: '论文题目占位：纳米材料组装与功能增强',
-    authors: 'Feng Lab members, F. Feng*',
-    journal: 'Journal / DOI 待补充',
-    featured: false,
-    tags: ['纳米材料'],
-  },
-  {
-    year: 2024,
-    title: '论文题目占位：功能分子系统的结构-性能关系',
-    authors: 'Feng Lab members, F. Feng*',
-    journal: 'Journal / DOI 待补充',
-    featured: false,
-    tags: ['功能分子'],
-  },
-  {
-    year: 2024,
-    title: '论文题目占位：面向生物应用的聚合物平台',
-    authors: 'Feng Lab members, Collaborators, F. Feng*',
-    journal: 'Journal / DOI 待补充',
-    featured: false,
-    tags: ['聚合物'],
-  },
-];
+  for (let index = 0; index < source.length; index += 1) {
+    const char = source[index];
+    const nextChar = source[index + 1];
 
-export const memberSections: MemberSection[] = [
+    if (char === '"') {
+      if (inQuotes && nextChar === '"') {
+        field += '"';
+        index += 1;
+      } else {
+        inQuotes = !inQuotes;
+      }
+      continue;
+    }
+
+    if (char === ',' && !inQuotes) {
+      row.push(field);
+      field = '';
+      continue;
+    }
+
+    if ((char === '\n' || char === '\r') && !inQuotes) {
+      if (char === '\r' && nextChar === '\n') {
+        continue;
+      }
+      row.push(field);
+      rows.push(row);
+      row = [];
+      field = '';
+      continue;
+    }
+
+    field += char;
+  }
+
+  if (field || row.length > 0) {
+    row.push(field);
+    rows.push(row);
+  }
+
+  const cleanedRows = rows.filter((cells) => cells.some((cell) => cell.trim()));
+  const [headers = [], ...dataRows] = cleanedRows;
+
+  return dataRows.map((cells) =>
+    headers.reduce<CsvRow>((record, header, index) => {
+      record[header.trim()] = decodeCsvValue(cells[index] ?? '');
+      return record;
+    }, {}),
+  );
+}
+
+function decodeCsvValue(value: string) {
+  return value.trim().replace(/\\n/g, '\n');
+}
+
+function sortByOrder<T extends CsvRow>(rows: T[], key = 'order') {
+  return [...rows].sort((a, b) => numberValue(a[key]) - numberValue(b[key]));
+}
+
+function numberValue(value: string | undefined, fallback = 0) {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : fallback;
+}
+
+function boolValue(value: string | undefined) {
+  const normalized = value?.trim().toLowerCase();
+  return Boolean(normalized && ['true', 'yes', 'y', '1', '是', '代表'].includes(normalized));
+}
+
+function listValue(value: string | undefined) {
+  return (value ?? '')
+    .split('|')
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function optionalValue(value: string | undefined) {
+  return value?.trim() || undefined;
+}
+
+function splitMemberName(value: string) {
+  const [name, nameEn] = value
+    .split(/[，,]/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+
+  return {
+    name: name || value,
+    nameEn: nameEn || name || value,
+  };
+}
+
+function translateIdentity(identity: string) {
+  const dictionary: Record<string, string> = {
+    教授: 'Professor',
+    副教授: 'Associate Professor',
+    讲师: 'Lecturer',
+    博士后: 'Postdoctoral Researcher',
+    博士生: 'Ph.D. Student',
+    硕士生: "Master's Student",
+    本科生: 'Undergraduate Student',
+  };
+
+  return dictionary[identity] ?? identity;
+}
+
+function translateStudyYears(studyYears: string | undefined) {
+  return studyYears?.replace('至今', 'present');
+}
+
+function isFacultyIdentity(identity: string) {
+  return ['教授', '讲师', '副教授', 'faculty'].includes(identity.trim().toLowerCase());
+}
+
+function memberImagePath(photo: string | undefined) {
+  const filename = photo?.trim();
+  if (!filename) return '/images/members/avatar-student-placeholder.png';
+  return filename.startsWith('/') ? filename : `/images/members/${filename}`;
+}
+
+function publicationImagePath(photo: string | undefined) {
+  const filename = photo?.trim();
+  if (!filename) return undefined;
+  return filename.startsWith('/') ? filename : `/images/publications/${filename}`;
+}
+
+function getContactValue(contactMap: ContactMap, key: string, language: 'zh' | 'en' = 'zh') {
+  return contactMap[key]?.[language] ?? '';
+}
+
+const homeRows = parseCsv(homeCsv);
+const contactRows = parseCsv(contactCsv);
+const contactMap = contactRows.reduce<ContactMap>((map, row) => {
+  if (row.key) {
+    map[row.key] = {
+      zh: row.value_zh ?? '',
+      en: row.value_en ?? '',
+    };
+  }
+  return map;
+}, {});
+
+export const siteInfo = {
+  name: getContactValue(contactMap, 'name'),
+  nameEn: getContactValue(contactMap, 'name', 'en'),
+  chineseName: getContactValue(contactMap, 'chineseName'),
+  chineseNameEn: getContactValue(contactMap, 'chineseName', 'en'),
+  tagline: getContactValue(contactMap, 'tagline'),
+  taglineEn: getContactValue(contactMap, 'tagline', 'en'),
+  institution: getContactValue(contactMap, 'institution'),
+  institutionEn: getContactValue(contactMap, 'institution', 'en'),
+  pi: getContactValue(contactMap, 'pi'),
+  piEn: getContactValue(contactMap, 'pi', 'en'),
+  email: getContactValue(contactMap, 'email'),
+  phone: getContactValue(contactMap, 'phone'),
+  address: getContactValue(contactMap, 'address'),
+  addressEn: getContactValue(contactMap, 'address', 'en'),
+  office: getContactValue(contactMap, 'office'),
+  officeEn: getContactValue(contactMap, 'office', 'en'),
+  lab: getContactValue(contactMap, 'lab'),
+  labEn: getContactValue(contactMap, 'lab', 'en'),
+  googleScholar: getContactValue(contactMap, 'googleScholar'),
+  homeBody: getContactValue(contactMap, 'homeBody'),
+  homeBodyEn: getContactValue(contactMap, 'homeBody', 'en'),
+  contactNote: getContactValue(contactMap, 'contactNote'),
+  contactNoteEn: getContactValue(contactMap, 'contactNote', 'en'),
+  contactChecklist: listValue(getContactValue(contactMap, 'contactChecklist')),
+  contactChecklistEn: listValue(getContactValue(contactMap, 'contactChecklist', 'en')),
+  mapImage: getContactValue(contactMap, 'mapImage'),
+  mapImageEn: getContactValue(contactMap, 'mapImage', 'en'),
+  logo: '/images/logo/logo-transparent.png',
+};
+
+export const relatedLinks: RelatedLink[] = sortByOrder(parseCsv(linksCsv)).map((row) => ({
+  label: row.label_zh,
+  labelEn: optionalValue(row.label_en),
+  url: row.url,
+}));
+
+export const heroSlides: HeroSlide[] = sortByOrder(homeRows.filter((row) => row.kind === 'hero')).map((row) => ({
+  eyebrow: '',
+  title: row.title_zh,
+  titleEn: optionalValue(row.title_en),
+  description: row.description_zh,
+  descriptionEn: optionalValue(row.description_en),
+  image: row.image,
+  alt: row.alt_zh,
+  altEn: optionalValue(row.alt_en),
+  caption: row.caption_zh,
+  captionEn: optionalValue(row.caption_en),
+}));
+
+export const researchDirections: ResearchDirection[] = sortByOrder(parseCsv(researchCsv)).map((row) => ({
+  id: row.id,
+  title: row.title_zh,
+  titleEn: row.title_en,
+  summary: row.summary_zh,
+  summaryEn: optionalValue(row.summary_en),
+  detail: row.detail_zh,
+  detailEn: optionalValue(row.detail_en),
+  keywords: listValue(row.keywords_zh),
+  keywordsEn: listValue(row.keywords_en),
+  image: row.image,
+}));
+
+export const publications: Publication[] = parseCsv(publicationsCsv)
+  .map((row) => ({
+    year: numberValue(row.year),
+    title: row.title_zh,
+    titleEn: optionalValue(row.title_en),
+    authors: row.authors,
+    journal: row.journal || row.journal_zh || row.journal_en,
+    featured: boolValue(row.featured),
+    image: publicationImagePath(row.image),
+    url: optionalValue(row.url),
+  }))
+  .sort((a, b) => b.year - a.year);
+
+const memberGroupOrder: Record<string, number> = {
+  教师: 1,
+  博士后: 2,
+  博士生: 3,
+  硕士生: 4,
+  本科生: 5,
+};
+
+const memberSectionsByStatus: OrderedMemberSection[] = [
   {
-    title: '教师',
-    intro: '展示 PI、合作教师或实验室固定研究人员信息。',
-    groups: [
-      {
-        label: '教师',
-        members: [
-          {
-            name: '李凤教授',
-            role: '课题组负责人 / Principal Investigator',
-            education: '教育与工作经历待补充',
-            research: '功能分子系统、生物医用材料、精准诊疗',
-            email: 'fenglab@example.edu.cn',
-            image: '/images/avatar-teacher-placeholder.png',
-          },
-        ],
-      },
-    ],
+    order: 1,
+    title: '当前成员',
+    titleEn: 'Current Members',
+    intro: '',
+    introEn: '',
+    groups: [],
   },
   {
-    title: '现有学生',
-    intro: '现有学生按博士后、博士生、硕士生分组，后续可直接增删成员数据。',
-    groups: [
-      {
-        label: '博士后',
-        members: [
-          {
-            name: '博士后姓名占位',
-            role: '博士后',
-            education: '博士毕业院校待补充',
-            research: '研究方向待补充',
-            image: '/images/avatar-researcher-placeholder.png',
-          },
-        ],
-      },
-      {
-        label: '博士生',
-        members: [
-          {
-            name: '博士生姓名占位 A',
-            role: '博士研究生',
-            education: '入学年份待补充',
-            research: '研究方向待补充',
-            image: '/images/avatar-student-placeholder.png',
-          },
-          {
-            name: '博士生姓名占位 B',
-            role: '博士研究生',
-            education: '入学年份待补充',
-            research: '研究方向待补充',
-            image: '/images/avatar-student-placeholder.png',
-          },
-        ],
-      },
-      {
-        label: '硕士生',
-        members: [
-          {
-            name: '硕士生姓名占位 A',
-            role: '硕士研究生',
-            education: '入学年份待补充',
-            research: '研究方向待补充',
-            image: '/images/avatar-student-placeholder.png',
-          },
-          {
-            name: '硕士生姓名占位 B',
-            role: '硕士研究生',
-            education: '入学年份待补充',
-            research: '研究方向待补充',
-            image: '/images/avatar-student-placeholder.png',
-          },
-          {
-            name: '硕士生姓名占位 C',
-            role: '硕士研究生',
-            education: '入学年份待补充',
-            research: '研究方向待补充',
-            image: '/images/avatar-student-placeholder.png',
-          },
-        ],
-      },
-    ],
-  },
-  {
+    order: 2,
     title: '以往学生',
-    intro: '以往学生可记录毕业去向，形成课题组长期档案。',
-    groups: [
-      {
-        label: '校友',
-        members: [
-          {
-            name: '校友姓名占位',
-            role: '毕业年份 / 去向待补充',
-            research: '毕业论文或研究方向待补充',
-            image: '/images/avatar-alumni-placeholder.png',
-          },
-        ],
-      },
-    ],
+    titleEn: 'Alumni',
+    intro: '',
+    introEn: '',
+    groups: [],
   },
 ];
 
-export const galleryItems: GalleryItem[] = [
-  {
-    title: '课题组合照',
-    date: '2026',
-    description: '用于展示团队成员合影，建议每年更新一次。',
-    image: '/images/gallery-group-placeholder.png',
-    alt: '课题组合照占位图',
-  },
-  {
-    title: '学术会议',
-    date: '2026',
-    description: '记录报告、墙报、会议交流与获奖瞬间。',
-    image: '/images/gallery-conference-placeholder.png',
-    alt: '学术会议占位图',
-  },
-  {
-    title: '实验室日常',
-    date: '2026',
-    description: '呈现实验、组会、讨论和仪器平台等日常场景。',
-    image: '/images/gallery-lab-placeholder.png',
-    alt: '实验室日常占位图',
-  },
-  {
-    title: '论文成果',
-    date: '2026',
-    description: '可展示封面图、TOC 图和代表性成果图。',
-    image: '/images/gallery-paper-placeholder.png',
-    alt: '论文成果占位图',
-  },
-];
+function addMemberToGroup(
+  section: OrderedMemberSection,
+  groupLabel: string,
+  groupLabelEn: string,
+  groupOrder: number,
+  member: OrderedMember,
+) {
+  let group = section.groups.find((item) => item.label === groupLabel);
+  if (!group) {
+    group = {
+      order: groupOrder,
+      label: groupLabel,
+      labelEn: groupLabelEn,
+      members: [],
+    };
+    section.groups.push(group);
+  }
+  group.members.push(member);
+}
 
-export const newsItems: NewsItem[] = [
-  {
-    date: '2026-06',
-    title: 'Feng Lab 网站建设启动',
-    description: '官网初版上线后，将逐步补充真实研究内容、成员信息和论文成果。',
-  },
-  {
-    date: '2026-05',
-    title: '欢迎对交叉研究感兴趣的同学联系',
-    description: '课题组长期欢迎具有化学、材料、生物医学或相关背景的同学加入。',
-  },
-  {
-    date: '2026-04',
-    title: '代表论文与成果图待更新',
-    description: '后续可在数据文件中维护论文列表，并在首页突出最新代表成果。',
-  },
-];
+parseCsv(membersCsv).forEach((row, index) => {
+  const status = row.status === 'alumni' ? 'alumni' : 'current';
+  const section = memberSectionsByStatus.find((item) => (status === 'alumni' ? item.title === '以往学生' : item.title === '当前成员'));
+  if (!section) return;
+
+  const identity = row.identity || '';
+  const facultyIntro = optionalValue(row.faculty_intro);
+  const isFaculty = status === 'current' && isFacultyIdentity(identity);
+  const { name, nameEn } = splitMemberName(row.name);
+  const studyYears = optionalValue(row.study_years);
+  const groupLabel = isFaculty ? '教师' : identity;
+  const groupLabelEn = isFaculty ? 'Faculty' : translateIdentity(identity);
+  const groupOrder = isFaculty ? 1 : memberGroupOrder[identity] ?? 99;
+
+  addMemberToGroup(section, groupLabel, groupLabelEn, groupOrder, {
+    order: index + 1,
+    name,
+    nameEn,
+    role: identity,
+    roleEn: translateIdentity(identity),
+    education: studyYears,
+    educationEn: translateStudyYears(studyYears),
+    research: isFaculty ? facultyIntro : undefined,
+    researchEn: isFaculty ? facultyIntro : undefined,
+    image: memberImagePath(row.photo),
+    identity,
+    status,
+    isFaculty,
+    isAlumni: status === 'alumni',
+  });
+});
+
+export const memberSections: MemberSection[] = memberSectionsByStatus
+  .filter((section) => section.groups.length)
+  .sort((a, b) => a.order - b.order)
+  .map(({ order: _sectionOrder, groups, ...section }) => ({
+    ...section,
+    groups: groups
+      .sort((a, b) => a.order - b.order)
+      .map(({ order: _groupOrder, ...group }) => ({
+        ...group,
+        members: group.members
+          .sort((a, b) => a.order - b.order)
+          .map(({ order: _memberOrder, ...member }) => member),
+      })),
+  }));
+
+export const galleryItems: GalleryItem[] = sortByOrder(parseCsv(galleryCsv)).map((row) => ({
+  title: row.title_zh,
+  titleEn: optionalValue(row.title_en),
+  date: row.date,
+  description: row.description_zh,
+  descriptionEn: optionalValue(row.description_en),
+  image: row.image,
+  alt: row.alt_zh,
+  altEn: optionalValue(row.alt_en),
+}));
+
+export const newsItems: NewsItem[] = sortByOrder(homeRows.filter((row) => row.kind === 'news')).map((row) => ({
+  date: row.date,
+  title: row.title_zh,
+  titleEn: optionalValue(row.title_en),
+  description: row.description_zh,
+  descriptionEn: optionalValue(row.description_en),
+}));

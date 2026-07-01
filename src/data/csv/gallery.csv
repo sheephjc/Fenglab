@@ -1,0 +1,5 @@
+order,title_zh,title_en,date,description_zh,description_en,image,alt_zh,alt_en
+1,"课题组合照","Group Photo",2026-06,"用于展示课题组年度合照、毕业合影或团队活动。","For annual group photos, graduation photos, and team activities.",/images/gallery/gallery-group-placeholder.png,"课题组合照占位","Group photo placeholder"
+2,"实验室日常","Lab Life",2026-05,"记录实验室讨论、实验操作和科研训练场景。","Moments from lab discussions, experiments, and research training.",/images/gallery/gallery-lab-placeholder.png,"实验室日常占位","Lab life placeholder"
+3,"论文成果展示","Research Highlights",2026-04,"展示论文图形摘要、封面图片和阶段性研究成果。","Graphical abstracts, cover images, and research highlights.",/images/gallery/gallery-paper-placeholder.png,"论文成果展示占位","Research highlight placeholder"
+4,"学术会议交流","Conference",2026-03,"记录会议报告、墙报展示和学术交流。","Conference talks, poster presentations, and academic exchange.",/images/gallery/gallery-conference-placeholder.png,"学术会议交流占位","Conference placeholder"
