@@ -1,2 +1,27 @@
 [      35ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://127.0.0.1:5173/node_modules/.vite/deps/react-dom_client.js?v=121d9372:20100
 [   13222ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://127.0.0.1:5173/node_modules/.vite/deps/react-dom_client.js?v=121d9372:20100
+[ 9265957ms] [LOG] [vite] server connection lost. Polling for restart... @ http://127.0.0.1:5173/@vite/client:963
+[ 9265963ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:5173/' failed: Error in connection establishment: net::ERR_NETWORK_IO_SUSPENDED @ http://127.0.0.1:5173/@vite/client:1034
+[24610854ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://127.0.0.1:5173/node_modules/.vite/deps/react-dom_client.js?v=121d9372:20100
+[31854311ms] [LOG] [vite] server connection lost. Polling for restart... @ http://127.0.0.1:5173/@vite/client:963
+[31854324ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:5173/' failed: Error in connection establishment: net::ERR_NETWORK_IO_SUSPENDED @ http://127.0.0.1:5173/@vite/client:1034
+[34778559ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://127.0.0.1:5173/node_modules/.vite/deps/react-dom_client.js?v=121d9372:20100
+[34803637ms] [LOG] [vite] server connection lost. Polling for restart... @ http://127.0.0.1:5173/@vite/client:963
+[34803641ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:5173/' failed: Error in connection establishment: net::ERR_NETWORK_IO_SUSPENDED @ http://127.0.0.1:5173/@vite/client:1034
+[34804761ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://127.0.0.1:5173/node_modules/.vite/deps/react-dom_client.js?v=121d9372:20100
+[34804892ms] [LOG] [vite] server connection lost. Polling for restart... @ http://127.0.0.1:5173/@vite/client:963
+[34804893ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:5173/' failed: Error in connection establishment: net::ERR_NETWORK_IO_SUSPENDED @ http://127.0.0.1:5173/@vite/client:1034
+[34806044ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://127.0.0.1:5173/node_modules/.vite/deps/react-dom_client.js?v=121d9372:20100
+[34806609ms] [LOG] [vite] server connection lost. Polling for restart... @ http://127.0.0.1:5173/@vite/client:963
+[34806610ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:5173/' failed: Error in connection establishment: net::ERR_NETWORK_IO_SUSPENDED @ http://127.0.0.1:5173/@vite/client:1034
+[34807690ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://127.0.0.1:5173/node_modules/.vite/deps/react-dom_client.js?v=121d9372:20100
+[34871732ms] [LOG] [vite] server connection lost. Polling for restart... @ http://127.0.0.1:5173/@vite/client:963
+[34871735ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:5173/' failed: Error in connection establishment: net::ERR_NETWORK_IO_SUSPENDED @ http://127.0.0.1:5173/@vite/client:1034
+[38749842ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://127.0.0.1:5173/node_modules/.vite/deps/react-dom_client.js?v=121d9372:20100
+[38753292ms] [LOG] [vite] server connection lost. Polling for restart... @ http://127.0.0.1:5173/@vite/client:963
+[38753293ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:5173/' failed: Error in connection establishment: net::ERR_NETWORK_IO_SUSPENDED @ http://127.0.0.1:5173/@vite/client:1034
+[49215636ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://127.0.0.1:5173/node_modules/.vite/deps/react-dom_client.js?v=121d9372:20100
+[49224668ms] [LOG] [vite] server connection lost. Polling for restart... @ http://127.0.0.1:5173/@vite/client:963
+[49224669ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:5173/' failed: Error in connection establishment: net::ERR_NETWORK_IO_SUSPENDED @ http://127.0.0.1:5173/@vite/client:1034
+[66911900ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://127.0.0.1:5173/node_modules/.vite/deps/react-dom_client.js?v=121d9372:20100
+[70011657ms] [LOG] [vite] server connection lost. Polling for restart... @ http://127.0.0.1:5173/@vite/client:963
