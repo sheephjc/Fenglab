@@ -1,8 +1,36 @@
-status,identity,name,study_years,photo,faculty_intro
-current,教授,李凤,,avatar-teacher-placeholder.png,教授，实验室负责人。主要围绕核酸功能材料、精准诊疗与生物界面调控开展研究。
-current,讲师,董宇航,,avatar-researcher-placeholder.png,讲师。主要参与实验室科研平台建设、学生培养与相关研究工作。
-current,博士生,学生 A，Student A,2025-至今,avatar-student-placeholder.png,
-current,硕士生,学生 A，Student A,2026-至今,avatar-student-placeholder.png,
-current,硕士生,学生 B，Student B,2026-至今,avatar-student-placeholder.png,
-alumni,博士生,毕业生 A，Alumnus A,2020-2024,avatar-alumni-placeholder.png,
-alumni,硕士生,毕业生 B，Alumnus B,2023-2026,avatar-alumni-placeholder.png,
+status,identity,name,study_years,photo,faculty_intro,faculty_intro_en,destination,destination_en
+current,教授,李凤，Feng Li,,李凤.webp,教授，实验室负责人。主要围绕核酸功能材料、精准诊疗与生物界面调控开展研究。,"Professor and laboratory head. Research focuses on functional nucleic acid materials, precision diagnosis and treatment, and biological interface regulation."
+current,讲师,董宇航，Yuhang Dong,,董宇航.webp,讲师。主要参与实验室科研平台建设、学生培养与相关研究工作。,"Lecturer. Primarily involved in developing the laboratory research platform, training students, and conducting related research."
+current,博士后,张国阳，Guoyang Zhang,2024-至今,张国阳.webp,,
+current,博士生,邴得贤，Dexian Bing,2023-至今,邴得贤.webp,,
+current,博士生,宋文哲，Wenzhe Song,2023-至今,宋文哲.webp,,
+current,博士生,范雪雨，Xueyu Fan,2024-至今,范雪雨.webp,,
+current,博士生,陈玲，Ling Chen,2025-至今,陈玲.webp,,
+current,博士生,刘世伟，Shiwei Liu,2025-至今,刘世伟.webp,,
+current,博士生,周嘉玮，Jiawei Zhou,2026-至今,周嘉玮.webp,,
+current,博士生,高健豫，Jianyu Gao,2026-至今,高健豫.webp,,
+current,博士生,李梦怡，Mengyi Li,2026-至今,李梦怡.webp,,
+current,硕士生,夏泽杰，Zejie Xia,2023-至今,夏泽杰.webp,,
+current,硕士生,蒲明韬，Mingtao Pu,2023-至今,蒲明韬.webp,,
+current,硕士生,王立霞，Lixia Wang,2024-至今,王立霞.webp,,
+current,硕士生,柳晶晶，Jingjing Liu,2024-至今,柳晶晶.webp,,
+current,硕士生,周昊远，Haoyuan Zhou,2024-至今,周昊远.webp,,
+current,硕士生,袁浩莹，Haoying Yuan,2024-至今,袁浩莹.webp,,
+current,硕士生,DUAA ZAKAREYA AWADALLA ELHAG,2024-至今,Duaa.webp,,
+current,硕士生,吴婷，Ting Wu,2025-至今,吴婷.webp,,
+current,硕士生,皮欣，Xin Pi,2025-至今,皮欣.webp,,
+current,硕士生,卢鑫，Xin Lu,2025-至今,卢鑫.webp,,
+current,硕士生,成壮，Zhuang Cheng,2025-至今,成壮.webp,,
+current,硕士生,孙嘉扬，Jiayang Sun,2025-至今,孙嘉扬.webp,,
+current,硕士生,胡锦程，Jincheng Hu,2026-至今,胡锦程.webp,,
+current,硕士生,张蕾，Lei Zhang,2026-至今,张蕾.webp,,
+current,硕士生,张智慧，Zhihui Zhang,2026-至今,张智慧.webp,,
+current,硕士生,楚梓烨，Ziye Chu,2026-至今,楚梓烨.webp,,
+current,硕士生,刘东昊，Donghao Liu,2026-至今,刘东昊.webp,,
+current,硕士生,魏钟志，Zhongzhi Wei,2026-至今,魏钟志.webp,,
+alumni,博士生,郭蕴华，Yunhua Guo,2022-2026,,,,待补充,To be added
+alumni,硕士生,李晶，Jing Li,2022-2024,,,,待补充,To be added
+alumni,硕士生,陈浩楠，Haonan Chen,2022-2025,,,,待补充,To be added
+alumni,硕士生,党双博，Shuangbo Dang,2022-2025,,,,待补充,To be added
+alumni,硕士生,王静萍，Jingping Wang,2022-2025,,,,待补充,To be added
+alumni,硕士生,高帆，Fan Gao,2023-2026,,,,待补充,To be added

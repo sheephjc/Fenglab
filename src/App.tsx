@@ -230,6 +230,9 @@ function getMemberSection(section: MemberSection, _index: number, language: Lang
         education: member.education
           ? localizedText(member.education, member.educationEn, language)
           : member.educationEn,
+        destination: member.destination
+          ? localizedText(member.destination, member.destinationEn, language)
+          : member.destinationEn,
         research: member.research ? localizedText(member.research, member.researchEn, language) : member.researchEn,
       })),
     })),
@@ -395,8 +398,10 @@ function Header({
   onReleaseCompactHeader: () => void;
 }) {
   const [memberMenuOpen, setMemberMenuOpen] = useState(false);
+  const [memberMenuPinned, setMemberMenuPinned] = useState(false);
   const [compact, setCompact] = useState(() => window.scrollY > COMPACT_ENTER_SCROLL);
   const [forceCompact, setForceCompact] = useState(false);
+  const memberDropdownRef = useRef<HTMLDivElement>(null);
   const compactRef = useRef(compact);
   const forceCompactRef = useRef(false);
   const forceCompactHeaderRef = useRef(forceCompactHeader);
@@ -410,7 +415,33 @@ function Header({
 
   useEffect(() => {
     setMemberMenuOpen(false);
+    setMemberMenuPinned(false);
   }, [route]);
+
+  useEffect(() => {
+    if (!memberMenuOpen) return;
+
+    const handlePointerDown = (event: PointerEvent) => {
+      if (!memberDropdownRef.current?.contains(event.target as Node)) {
+        setMemberMenuOpen(false);
+        setMemberMenuPinned(false);
+      }
+    };
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setMemberMenuOpen(false);
+        setMemberMenuPinned(false);
+        memberDropdownRef.current?.querySelector<HTMLButtonElement>('.nav-dropdown-trigger')?.focus();
+      }
+    };
+
+    document.addEventListener('pointerdown', handlePointerDown);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('pointerdown', handlePointerDown);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [memberMenuOpen]);
 
   useEffect(() => {
     compactRef.current = compact || forceCompact || forceCompactHeader;
@@ -573,13 +604,23 @@ function Header({
             <div
               className={`nav-dropdown ${route.startsWith('/members/') ? 'active' : ''} ${memberMenuOpen ? 'open' : ''}`}
               key={item.path}
+              ref={memberDropdownRef}
+              onMouseEnter={() => setMemberMenuOpen(true)}
+              onMouseLeave={() => {
+                if (!memberMenuPinned) setMemberMenuOpen(false);
+              }}
             >
               <button
                 className="nav-dropdown-trigger"
                 type="button"
                 aria-haspopup="true"
                 aria-expanded={memberMenuOpen}
-                onClick={() => setMemberMenuOpen((open) => !open)}
+                onClick={(event) => {
+                  const nextPinned = !memberMenuPinned;
+                  setMemberMenuPinned(nextPinned);
+                  setMemberMenuOpen(nextPinned);
+                  if (!nextPinned) event.currentTarget.blur();
+                }}
               >
                 {item.label[language]}
                 <ChevronDown size={15} />
@@ -651,15 +692,16 @@ function HomePage({ language }: { language: Language }) {
 
 function HeroCarousel({ language }: { language: Language }) {
   const [activeIndex, setActiveIndex] = useState(0);
-  const slide = getHeroSlide(heroSlides[activeIndex], activeIndex, language);
+  const sourceSlide = heroSlides[activeIndex];
+  const slide = getHeroSlide(sourceSlide, activeIndex, language);
   const t = copy[language].hero;
 
   useEffect(() => {
-    const timer = window.setInterval(() => {
+    const timer = window.setTimeout(() => {
       setActiveIndex((index) => (index + 1) % heroSlides.length);
     }, 8200);
-    return () => window.clearInterval(timer);
-  }, []);
+    return () => window.clearTimeout(timer);
+  }, [activeIndex]);
 
   const goToSlide = (index: number) => setActiveIndex((index + heroSlides.length) % heroSlides.length);
 
@@ -667,7 +709,12 @@ function HeroCarousel({ language }: { language: Language }) {
     <section className="hero-section" aria-label={t.aria}>
       <figure className="hero-figure">
         <div className="hero">
-          <SmartImage src={slide.image} alt={slide.alt} className="hero-image" loading="eager" />
+          <SmartImage
+            src={slide.image}
+            alt={slide.alt}
+            className={slide.imageFit === 'contain' ? 'hero-image hero-image-contain' : 'hero-image'}
+            loading="eager"
+          />
           <button
             className="hero-control hero-control-left"
             type="button"
@@ -699,7 +746,18 @@ function HeroCarousel({ language }: { language: Language }) {
             ))}
           </div>
         </div>
-        <figcaption className="hero-caption">{slide.caption}</figcaption>
+        <figcaption className="hero-caption">
+          {sourceSlide.captionBilingual ? (
+            <>
+              <span lang="en">{sourceSlide.captionEn}</span>
+              <span className="hero-caption-translation" lang="zh-CN">
+                {sourceSlide.caption}
+              </span>
+            </>
+          ) : (
+            slide.caption
+          )}
+        </figcaption>
       </figure>
     </section>
   );
@@ -883,58 +941,102 @@ function MembersPage({ view, language }: { view: 'current' | 'alumni'; language:
   const visibleSections = memberSections.filter((section) =>
     view === 'current' ? section.title !== '以往学生' : section.title === '以往学生',
   );
+  const pageTitleId = `members-${view}-title`;
+  const alumniGroups = visibleSections.flatMap(
+    (section) => getMemberSection(section, memberSections.indexOf(section), language).groups,
+  );
+  const pageIntro = visibleSections[0]
+    ? localizedText(visibleSections[0].intro, visibleSections[0].introEn, language)
+    : '';
 
   return (
-    <section className="section section-white">
+    <section className="section section-white" aria-labelledby={pageTitleId}>
       <div className="container member-sections">
-        {visibleSections.map((section) => {
-          const sectionIndex = memberSections.indexOf(section);
-          const displaySection = getMemberSection(section, sectionIndex, language);
+        <header className="member-page-head">
+          <h1 id={pageTitleId}>
+            {view === 'current' ? copy[language].members.current : copy[language].members.alumni}
+          </h1>
+          {pageIntro && <p>{pageIntro}</p>}
+        </header>
+        {view === 'alumni' ? (
+          <div className="alumni-groups">
+            {alumniGroups.map((group, groupIndex) => {
+              const groupTitleId = `members-alumni-group-${groupIndex}`;
 
-          return (
-            <section
-              className="member-section"
-              key={section.title}
-              aria-labelledby={`member-${displaySection.title}`}
-            >
-              <div className="member-section-head">
-                <h2 id={`member-${displaySection.title}`}>{displaySection.title}</h2>
-                {displaySection.intro && <p>{displaySection.intro}</p>}
-              </div>
-              {displaySection.groups.map((group) => {
-                const isFacultyGroup = group.members.some((member) => member.isFaculty);
-
-                return (
-                  <div className="member-group" key={group.label}>
-                    <h3>{group.label}</h3>
-                    <div className={isFacultyGroup ? 'faculty-list' : 'student-grid'}>
-                      {group.members.map((member) =>
-                        member.isFaculty ? (
-                          <article className="faculty-card" key={`${group.label}-${member.name}`}>
-                            <SmartImage src={member.image} alt={member.name} className="faculty-photo" />
-                            <div className="faculty-info">
-                              <h4>{member.name}</h4>
-                              <p className="member-role">{member.role}</p>
-                              {member.research && <p>{member.research}</p>}
-                            </div>
-                          </article>
-                        ) : (
-                          <article className="student-card" key={`${group.label}-${member.name}`}>
-                            <SmartImage src={member.image} alt={member.name} className="student-photo" />
-                            <div className="student-info">
-                              <h4>{member.name}</h4>
-                              {member.education && <p>{member.education}</p>}
-                            </div>
-                          </article>
-                        ),
-                      )}
-                    </div>
+              return (
+                <section className="member-group alumni-group" key={group.label} aria-labelledby={groupTitleId}>
+                  <h2 id={groupTitleId}>{group.label}</h2>
+                  <div className="alumni-table-wrap">
+                    <table className="alumni-table" aria-labelledby={groupTitleId}>
+                      <thead>
+                        <tr>
+                          <th scope="col">{language === 'zh' ? '姓名' : 'Name'}</th>
+                          <th scope="col">{language === 'zh' ? '学习时期' : 'Study Period'}</th>
+                          <th scope="col">{language === 'zh' ? '毕业去向' : 'After Graduation'}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {group.members.map((member) => (
+                          <tr key={member.name}>
+                            <td>{member.name}</td>
+                            <td>{member.education || '—'}</td>
+                            <td>{member.destination || (language === 'zh' ? '待补充' : 'To be added')}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
-                );
-              })}
-            </section>
-          );
-        })}
+                </section>
+              );
+            })}
+          </div>
+        ) : (
+          visibleSections.map((section) => {
+            const sectionIndex = memberSections.indexOf(section);
+            const displaySection = getMemberSection(section, sectionIndex, language);
+
+            return (
+              <div className="member-section" key={section.title}>
+                {displaySection.groups.map((group, groupIndex) => {
+                  const isFacultyGroup = group.members.some((member) => member.isFaculty);
+                  const groupTitleId = `members-${view}-section-${sectionIndex}-group-${groupIndex}`;
+
+                  return (
+                    <section
+                      className="member-group"
+                      key={section.groups[groupIndex]?.label ?? group.label}
+                      aria-labelledby={groupTitleId}
+                    >
+                      <h2 id={groupTitleId}>{group.label}</h2>
+                      <div className={isFacultyGroup ? 'faculty-list' : 'student-grid'}>
+                        {group.members.map((member) =>
+                          member.isFaculty ? (
+                            <article className="faculty-card" key={`${group.label}-${member.name}`}>
+                              <SmartImage src={member.image} alt={member.name} className="faculty-photo" />
+                              <div className="faculty-info">
+                                <h3>{member.name}</h3>
+                                <p className="member-role">{member.role}</p>
+                                {member.research && <p>{member.research}</p>}
+                              </div>
+                            </article>
+                          ) : (
+                            <article className="student-card" key={`${group.label}-${member.name}`}>
+                              <SmartImage src={member.image} alt={member.name} className="student-photo" />
+                              <div className="student-info">
+                                <h3>{member.name}</h3>
+                                {member.education && <p>{member.education}</p>}
+                              </div>
+                            </article>
+                          ),
+                        )}
+                      </div>
+                    </section>
+                  );
+                })}
+              </div>
+            );
+          })
+        )}
       </div>
     </section>
   );
@@ -944,22 +1046,71 @@ function GalleryPage({ language }: { language: Language }) {
   return (
     <section className="section section-white">
       <div className="container gallery-grid">
-        {galleryItems.map((item, index) => {
-          const displayItem = getGalleryItem(item, index, language);
-
-          return (
-            <article className="gallery-card" key={item.title}>
-              <SmartImage src={displayItem.image} alt={displayItem.alt} className="gallery-image" />
-              <div className="gallery-copy">
-                <time>{displayItem.date}</time>
-                <h2>{displayItem.title}</h2>
-                <p>{displayItem.description}</p>
-              </div>
-            </article>
-          );
-        })}
+        {galleryItems.map((item, index) => (
+          <GalleryCarouselCard key={item.title} item={item} itemIndex={index} language={language} />
+        ))}
       </div>
     </section>
+  );
+}
+
+function GalleryCarouselCard({
+  item,
+  itemIndex,
+  language,
+}: {
+  item: GalleryItem;
+  itemIndex: number;
+  language: Language;
+}) {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const displayItem = getGalleryItem(item, itemIndex, language);
+  const imageCount = displayItem.images.length;
+  const currentIndex = imageCount ? activeIndex % imageCount : 0;
+  const currentImage = displayItem.images[currentIndex] ?? '';
+  const previousLabel = language === 'zh' ? '上一张图片' : 'Previous image';
+  const nextLabel = language === 'zh' ? '下一张图片' : 'Next image';
+
+  const goToImage = (index: number) => {
+    if (!imageCount) return;
+    setActiveIndex((index + imageCount) % imageCount);
+  };
+
+  return (
+    <article className="gallery-card">
+      <div className="gallery-carousel">
+        <SmartImage
+          src={currentImage}
+          alt={`${displayItem.alt} ${currentIndex + 1}`}
+          className="gallery-image"
+        />
+        {imageCount > 1 && (
+          <>
+            <button
+              className="hero-control hero-control-left gallery-control"
+              type="button"
+              title={previousLabel}
+              aria-label={previousLabel}
+              onClick={() => goToImage(currentIndex - 1)}
+            >
+              <ChevronLeft size={34} strokeWidth={1.7} />
+            </button>
+            <button
+              className="hero-control hero-control-right gallery-control"
+              type="button"
+              title={nextLabel}
+              aria-label={nextLabel}
+              onClick={() => goToImage(currentIndex + 1)}
+            >
+              <ChevronRight size={34} strokeWidth={1.7} />
+            </button>
+          </>
+        )}
+      </div>
+      <div className="gallery-copy">
+        <h2>{displayItem.title}</h2>
+      </div>
+    </article>
   );
 }
 

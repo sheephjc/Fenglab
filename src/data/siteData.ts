@@ -13,10 +13,12 @@ export type HeroSlide = {
   description: string;
   descriptionEn?: string;
   image: string;
+  imageFit: 'cover' | 'contain';
   alt: string;
   altEn?: string;
   caption: string;
   captionEn?: string;
+  captionBilingual: boolean;
 };
 
 export type ResearchDirection = {
@@ -50,10 +52,13 @@ export type Member = {
   roleEn?: string;
   education?: string;
   educationEn?: string;
+  destination?: string;
+  destinationEn?: string;
   research?: string;
   researchEn?: string;
   email?: string;
   image: string;
+  hasPhoto?: boolean;
   identity?: string;
   status?: 'current' | 'alumni';
   isFaculty?: boolean;
@@ -80,7 +85,7 @@ export type GalleryItem = {
   date: string;
   description: string;
   descriptionEn?: string;
-  image: string;
+  images: string[];
   alt: string;
   altEn?: string;
 };
@@ -232,13 +237,22 @@ function translateStudyYears(studyYears: string | undefined) {
   return studyYears?.replace('至今', 'present');
 }
 
+function studyEndYear(studyYears: string | undefined) {
+  const years = studyYears?.match(/\d{4}/g);
+  return years?.length ? Number(years[years.length - 1]) : 0;
+}
+
 function isFacultyIdentity(identity: string) {
   return ['教授', '讲师', '副教授', 'faculty'].includes(identity.trim().toLowerCase());
 }
 
-function memberImagePath(photo: string | undefined) {
+function memberImagePath(photo: string | undefined, status: 'current' | 'alumni') {
   const filename = photo?.trim();
-  if (!filename) return '/images/members/avatar-student-placeholder.png';
+  if (!filename) {
+    return status === 'alumni'
+      ? '/images/members/avatar-alumni-placeholder.png'
+      : '/images/members/avatar-student-placeholder.png';
+  }
   return filename.startsWith('/') ? filename : `/images/members/${filename}`;
 }
 
@@ -308,10 +322,12 @@ export const heroSlides: HeroSlide[] = sortByOrder(homeRows.filter((row) => row.
   description: row.description_zh,
   descriptionEn: optionalValue(row.description_en),
   image: row.image,
+  imageFit: row.image_fit === 'contain' ? 'contain' : 'cover',
   alt: row.alt_zh,
   altEn: optionalValue(row.alt_en),
   caption: row.caption_zh,
   captionEn: optionalValue(row.caption_en),
+  captionBilingual: boolValue(row.caption_bilingual),
 }));
 
 export const researchDirections: ResearchDirection[] = sortByOrder(parseCsv(researchCsv)).map((row) => ({
@@ -394,9 +410,11 @@ parseCsv(membersCsv).forEach((row, index) => {
 
   const identity = row.identity || '';
   const facultyIntro = optionalValue(row.faculty_intro);
+  const facultyIntroEn = optionalValue(row.faculty_intro_en);
   const isFaculty = status === 'current' && isFacultyIdentity(identity);
   const { name, nameEn } = splitMemberName(row.name);
   const studyYears = optionalValue(row.study_years);
+  const hasPhoto = Boolean(row.photo?.trim());
   const groupLabel = isFaculty ? '教师' : identity;
   const groupLabelEn = isFaculty ? 'Faculty' : translateIdentity(identity);
   const groupOrder = isFaculty ? 1 : memberGroupOrder[identity] ?? 99;
@@ -409,9 +427,12 @@ parseCsv(membersCsv).forEach((row, index) => {
     roleEn: translateIdentity(identity),
     education: studyYears,
     educationEn: translateStudyYears(studyYears),
+    destination: optionalValue(row.destination),
+    destinationEn: optionalValue(row.destination_en),
     research: isFaculty ? facultyIntro : undefined,
-    researchEn: isFaculty ? facultyIntro : undefined,
-    image: memberImagePath(row.photo),
+    researchEn: isFaculty ? facultyIntroEn : undefined,
+    image: memberImagePath(row.photo, status),
+    hasPhoto,
     identity,
     status,
     isFaculty,
@@ -429,7 +450,11 @@ export const memberSections: MemberSection[] = memberSectionsByStatus
       .map(({ order: _groupOrder, ...group }) => ({
         ...group,
         members: group.members
-          .sort((a, b) => a.order - b.order)
+          .sort((a, b) =>
+            section.title === '以往学生'
+              ? studyEndYear(b.education) - studyEndYear(a.education) || a.order - b.order
+              : a.order - b.order,
+          )
           .map(({ order: _memberOrder, ...member }) => member),
       })),
   }));
@@ -440,7 +465,7 @@ export const galleryItems: GalleryItem[] = sortByOrder(parseCsv(galleryCsv)).map
   date: row.date,
   description: row.description_zh,
   descriptionEn: optionalValue(row.description_en),
-  image: row.image,
+  images: listValue(row.image),
   alt: row.alt_zh,
   altEn: optionalValue(row.alt_en),
 }));
