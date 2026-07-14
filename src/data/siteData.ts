@@ -6,6 +6,12 @@ import membersCsv from './csv/members.csv?raw';
 import publicationsCsv from './csv/publications.csv?raw';
 import researchCsv from './csv/research.csv?raw';
 
+const newsArticleModules = import.meta.glob('./news/*.md', {
+  eager: true,
+  query: '?raw',
+  import: 'default',
+}) as Record<string, string>;
+
 export type HeroSlide = {
   eyebrow: string;
   title: string;
@@ -91,11 +97,14 @@ export type GalleryItem = {
 };
 
 export type NewsItem = {
+  slug: string;
   date: string;
   title: string;
   titleEn?: string;
   description: string;
   descriptionEn?: string;
+  article: string;
+  articleEn?: string;
 };
 
 export type RelatedLink = {
@@ -205,6 +214,12 @@ function listValue(value: string | undefined) {
 
 function optionalValue(value: string | undefined) {
   return value?.trim() || undefined;
+}
+
+function newsArticle(filename: string | undefined) {
+  const normalizedFilename = filename?.trim();
+  if (!normalizedFilename) return '';
+  return newsArticleModules[`./news/${normalizedFilename}`] ?? '';
 }
 
 function splitMemberName(value: string) {
@@ -471,9 +486,12 @@ export const galleryItems: GalleryItem[] = sortByOrder(parseCsv(galleryCsv)).map
 }));
 
 export const newsItems: NewsItem[] = sortByOrder(homeRows.filter((row) => row.kind === 'news')).map((row) => ({
+  slug: row.slug,
   date: row.date,
   title: row.title_zh,
   titleEn: optionalValue(row.title_en),
   description: row.description_zh,
   descriptionEn: optionalValue(row.description_en),
+  article: newsArticle(row.article_zh),
+  articleEn: optionalValue(newsArticle(row.article_en)),
 }));

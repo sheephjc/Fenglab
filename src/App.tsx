@@ -1,5 +1,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import ReactMarkdown from 'react-markdown';
 import {
+  ArrowLeft,
   ArrowRight,
   BookOpen,
   CalendarDays,
@@ -33,7 +35,7 @@ import {
   type ResearchDirection,
 } from './data/siteData';
 
-type Route =
+type StaticRoute =
   | '/'
   | '/research'
   | '/publications'
@@ -41,6 +43,9 @@ type Route =
   | '/members/alumni'
   | '/gallery'
   | '/contact';
+
+type NewsRoute = `/news/${string}`;
+type Route = StaticRoute | NewsRoute;
 
 type Language = 'zh' | 'en';
 
@@ -255,6 +260,7 @@ function getNewsItems(language: Language): NewsItem[] {
     ...item,
     title: localizedText(item.title, item.titleEn, language),
     description: localizedText(item.description, item.descriptionEn, language),
+    article: localizedText(item.article, item.articleEn, language),
   }));
 }
 
@@ -277,6 +283,10 @@ function getInitialLanguage(): Language {
 function getCurrentRoute(): Route {
   const hash = window.location.hash.replace(/^#/, '') || '/';
   if (hash === '/members') return '/members/current';
+  if (hash.startsWith('/news/')) {
+    const slug = hash.slice('/news/'.length);
+    return newsItems.some((item) => item.slug === slug) ? (hash as NewsRoute) : '/';
+  }
   const routePaths = navItems.flatMap((item) => [item.path, ...(item.children?.map((child) => child.path) ?? [])]);
   return routePaths.includes(hash as Route) ? (hash as Route) : '/';
 }
@@ -302,9 +312,12 @@ function App() {
 
   useEffect(() => {
     document.documentElement.lang = language === 'zh' ? 'zh-CN' : 'en';
-    document.title = t.documentTitle;
+    const activeNews = route.startsWith('/news/')
+      ? getNewsItems(language).find((item) => item.slug === route.slice('/news/'.length))
+      : undefined;
+    document.title = activeNews ? `${activeNews.title} | Feng Lab` : t.documentTitle;
     window.localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
-  }, [language, t.documentTitle]);
+  }, [language, route, t.documentTitle]);
 
   useEffect(() => {
     const shouldPreserveCompact =
@@ -360,6 +373,11 @@ function App() {
 }
 
 function renderRoute(route: Route, language: Language) {
+  if (route.startsWith('/news/')) {
+    const newsItem = newsItems.find((item) => item.slug === route.slice('/news/'.length));
+    return newsItem ? <NewsArticlePage item={newsItem} language={language} /> : <HomePage language={language} />;
+  }
+
   switch (route) {
     case '/research':
       return <ResearchPage language={language} />;
@@ -580,7 +598,7 @@ function Header({
           <span className="brand-full">
             <img className="header-mobile-logo" src={siteInfo.logo} alt="" />
             <strong>{t.headerTitle}</strong>
-            <small>{t.headerSubtitle}</small>
+            <small className={language === 'en' ? 'header-subtitle-en' : undefined}>{t.headerSubtitle}</small>
           </span>
           <span className="brand-compact" aria-hidden="true">
             <img className="header-compact-logo" src={siteInfo.logo} alt="" />
@@ -674,19 +692,65 @@ function HomePage({ language }: { language: Language }) {
             <h2>{t.newsTitle}</h2>
             <div className="news-list">
               {currentNewsItems.map((item) => (
-                <article className="news-item" key={item.title}>
-                  <time>{item.date}</time>
+                <a className="news-item" href={`#/news/${item.slug}`} key={item.slug}>
+                  <time dateTime={item.date.replace('.', '-')}>{item.date}</time>
                   <div>
-                    <h3>{item.title}</h3>
+                    <span className="news-item-heading">
+                      <h3>{item.title}</h3>
+                      <ArrowRight size={18} aria-hidden="true" />
+                    </span>
                     <p>{item.description}</p>
                   </div>
-                </article>
+                </a>
               ))}
             </div>
           </aside>
         </div>
       </section>
     </>
+  );
+}
+
+function NewsArticlePage({ item, language }: { item: NewsItem; language: Language }) {
+  const displayItem = getNewsItems(language).find((newsItem) => newsItem.slug === item.slug) ?? item;
+  const backLabel = language === 'zh' ? '返回首页' : 'Back to home';
+  const unavailableMessage = language === 'zh' ? '新闻正文暂不可用。' : 'The article is currently unavailable.';
+
+  return (
+    <section className="section section-white news-article-section">
+      <article className="container news-article">
+        <a className="news-back-link" href="#/">
+          <ArrowLeft size={17} aria-hidden="true" />
+          {backLabel}
+        </a>
+        <header className="news-article-header">
+          <time dateTime={displayItem.date.replace('.', '-')}>{displayItem.date}</time>
+          <h1>{displayItem.title}</h1>
+          <p>{displayItem.description}</p>
+        </header>
+        <div className="news-article-body">
+          {displayItem.article ? (
+            <ReactMarkdown
+              components={{
+                img: ({ src, alt }) => <img src={src} alt={alt ?? ''} loading="lazy" />,
+                a: ({ href, children }) => {
+                  const external = href?.startsWith('http');
+                  return (
+                    <a href={href} target={external ? '_blank' : undefined} rel={external ? 'noreferrer' : undefined}>
+                      {children}
+                    </a>
+                  );
+                },
+              }}
+            >
+              {displayItem.article}
+            </ReactMarkdown>
+          ) : (
+            <p>{unavailableMessage}</p>
+          )}
+        </div>
+      </article>
+    </section>
   );
 }
 
@@ -703,6 +767,12 @@ function HeroCarousel({ language }: { language: Language }) {
     return () => window.clearTimeout(timer);
   }, [activeIndex]);
 
+  useEffect(() => {
+    const nextSlide = heroSlides[(activeIndex + 1) % heroSlides.length];
+    const preloadImage = new window.Image();
+    preloadImage.src = nextSlide.image;
+  }, [activeIndex]);
+
   const goToSlide = (index: number) => setActiveIndex((index + heroSlides.length) % heroSlides.length);
 
   return (
@@ -710,6 +780,7 @@ function HeroCarousel({ language }: { language: Language }) {
       <figure className="hero-figure">
         <div className="hero">
           <SmartImage
+            key={slide.image}
             src={slide.image}
             alt={slide.alt}
             className={slide.imageFit === 'contain' ? 'hero-image hero-image-contain' : 'hero-image'}
