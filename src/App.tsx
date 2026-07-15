@@ -77,21 +77,26 @@ const MOBILE_HEADER_QUERY = '(max-width: 760px)';
 const PRESERVE_COMPACT_NAV_KEY = 'fenglab:preserve-compact-navigation';
 const HEADER_COMPACT_STATE_KEY = 'fenglab:header-is-compact';
 const LANGUAGE_STORAGE_KEY = 'fenglab:language';
+const contactEmails = siteInfo.email
+  .split('\n')
+  .map((email) => email.trim())
+  .filter(Boolean);
+const primaryContactEmail = contactEmails[0] ?? '';
 
 const copy = {
   zh: {
-    documentTitle: '北京化工大学李凤课题组',
+    documentTitle: 'Feng-lab@Buct | 北京化工大学李凤课题组',
     skipLink: '跳到主要内容',
-    headerTitle: 'Welcome to Feng-Lab@BUCT',
+    headerTitle: 'Welcome to Feng-lab@Buct',
     headerSubtitle: siteInfo.tagline,
     languageToggle: 'English',
     navLabel: '主导航',
     closeNav: '关闭导航',
     openNav: '打开导航',
-    homeAria: 'Feng Lab 首页',
+    homeAria: 'Feng-lab@Buct 首页',
     home: {
-      title: '核酸功能材料实验室',
-      intro: siteInfo.tagline,
+      title: '核酸化学与核酸生物医药实验室',
+      intro: '',
       body: siteInfo.homeBody,
       newsTitle: '最新动态',
     },
@@ -132,18 +137,18 @@ const copy = {
     },
   },
   en: {
-    documentTitle: 'Feng Lab | Beijing University of Chemical Technology',
+    documentTitle: 'Feng-lab@Buct | Beijing University of Chemical Technology',
     skipLink: 'Skip to main content',
-    headerTitle: 'Welcome to Feng-Lab@BUCT',
+    headerTitle: 'Welcome to Feng-lab@Buct',
     headerSubtitle: siteInfo.taglineEn,
     languageToggle: '中文',
     navLabel: 'Main navigation',
     closeNav: 'Close navigation',
     openNav: 'Open navigation',
-    homeAria: 'Feng Lab home',
+    homeAria: 'Feng-lab@Buct home',
     home: {
-      title: 'Nucleic Acid Functional Materials Laboratory',
-      intro: siteInfo.taglineEn,
+      title: 'Laboratory of Nucleic Acid Chemistry and Nucleic Acid Biomedicine',
+      intro: '',
       body: siteInfo.homeBodyEn,
       newsTitle: 'News',
     },
@@ -315,7 +320,7 @@ function App() {
     const activeNews = route.startsWith('/news/')
       ? getNewsItems(language).find((item) => item.slug === route.slice('/news/'.length))
       : undefined;
-    document.title = activeNews ? `${activeNews.title} | Feng Lab` : t.documentTitle;
+    document.title = activeNews ? `${activeNews.title} | Feng-lab@Buct` : t.documentTitle;
     window.localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
   }, [language, route, t.documentTitle]);
 
@@ -590,6 +595,7 @@ function Header({
   };
 
   const t = copy[language];
+  const [subtitleLead, subtitleTail] = t.headerSubtitle.split(' and ');
 
   return (
     <header className={compact || forceCompact || forceCompactHeader ? 'site-header compact' : 'site-header'}>
@@ -598,7 +604,16 @@ function Header({
           <span className="brand-full">
             <img className="header-mobile-logo" src={siteInfo.logo} alt="" />
             <strong>{t.headerTitle}</strong>
-            <small className={language === 'en' ? 'header-subtitle-en' : undefined}>{t.headerSubtitle}</small>
+            <small className={language === 'en' ? 'header-subtitle-en' : undefined}>
+              {language === 'en' && subtitleTail ? (
+                <>
+                  <span className="header-subtitle-line">{subtitleLead}</span>{' '}
+                  <span className="header-subtitle-line">and {subtitleTail}</span>
+                </>
+              ) : (
+                t.headerSubtitle
+              )}
+            </small>
           </span>
           <span className="brand-compact" aria-hidden="true">
             <img className="header-compact-logo" src={siteInfo.logo} alt="" />
@@ -699,7 +714,6 @@ function HomePage({ language }: { language: Language }) {
                       <h3>{item.title}</h3>
                       <ArrowRight size={18} aria-hidden="true" />
                     </span>
-                    <p>{item.description}</p>
                   </div>
                 </a>
               ))}
@@ -712,9 +726,18 @@ function HomePage({ language }: { language: Language }) {
 }
 
 function NewsArticlePage({ item, language }: { item: NewsItem; language: Language }) {
-  const displayItem = getNewsItems(language).find((newsItem) => newsItem.slug === item.slug) ?? item;
+  const currentNewsItems = getNewsItems(language);
+  const displayItem = currentNewsItems.find((newsItem) => newsItem.slug === item.slug) ?? item;
+  const currentIndex = currentNewsItems.findIndex((newsItem) => newsItem.slug === item.slug);
+  const previousItem = currentIndex > 0 ? currentNewsItems[currentIndex - 1] : undefined;
+  const nextItem = currentIndex >= 0 && currentIndex < currentNewsItems.length - 1
+    ? currentNewsItems[currentIndex + 1]
+    : undefined;
   const backLabel = language === 'zh' ? '返回首页' : 'Back to home';
   const unavailableMessage = language === 'zh' ? '新闻正文暂不可用。' : 'The article is currently unavailable.';
+  const previousLabel = language === 'zh' ? '上一篇' : 'Previous article';
+  const nextLabel = language === 'zh' ? '下一篇' : 'Next article';
+  const navigationLabel = language === 'zh' ? '新闻文章切换' : 'News article navigation';
 
   return (
     <section className="section section-white news-article-section">
@@ -726,13 +749,19 @@ function NewsArticlePage({ item, language }: { item: NewsItem; language: Languag
         <header className="news-article-header">
           <time dateTime={displayItem.date.replace('.', '-')}>{displayItem.date}</time>
           <h1>{displayItem.title}</h1>
-          <p>{displayItem.description}</p>
         </header>
         <div className="news-article-body">
           {displayItem.article ? (
             <ReactMarkdown
               components={{
-                img: ({ src, alt }) => <img src={src} alt={alt ?? ''} loading="lazy" />,
+                img: ({ src, alt }) => (
+                  <img
+                    className={src?.includes('/images/publications/') ? 'news-article-image-contained' : undefined}
+                    src={src}
+                    alt={alt ?? ''}
+                    loading="lazy"
+                  />
+                ),
                 a: ({ href, children }) => {
                   const external = href?.startsWith('http');
                   return (
@@ -749,6 +778,32 @@ function NewsArticlePage({ item, language }: { item: NewsItem; language: Languag
             <p>{unavailableMessage}</p>
           )}
         </div>
+        {(previousItem || nextItem) && (
+          <nav className="news-article-pagination" aria-label={navigationLabel}>
+            {previousItem ? (
+              <a className="news-article-nav-link news-article-nav-previous" href={`#/news/${previousItem.slug}`}>
+                <span className="news-article-nav-label">
+                  <ArrowLeft size={16} aria-hidden="true" />
+                  {previousLabel}
+                </span>
+                <strong>{previousItem.title}</strong>
+              </a>
+            ) : (
+              <span className="news-article-nav-spacer" aria-hidden="true" />
+            )}
+            {nextItem ? (
+              <a className="news-article-nav-link news-article-nav-next" href={`#/news/${nextItem.slug}`}>
+                <span className="news-article-nav-label">
+                  {nextLabel}
+                  <ArrowRight size={16} aria-hidden="true" />
+                </span>
+                <strong>{nextItem.title}</strong>
+              </a>
+            ) : (
+              <span className="news-article-nav-spacer" aria-hidden="true" />
+            )}
+          </nav>
+        )}
       </article>
     </section>
   );
@@ -841,7 +896,7 @@ function ResearchPreview() {
         <SectionTitle
           eyebrow="Research"
           title="三个主方向构成清晰的研究入口"
-          intro="首页先让访问者快速理解 Feng Lab 关注什么；研究方向页再展开每个方向的背景、策略和代表成果。"
+          intro="首页先让访问者快速理解 Feng-lab@Buct 关注什么；研究方向页再展开每个方向的背景、策略和代表成果。"
         />
         <div className="card-grid three">
           {researchDirections.map((direction) => (
@@ -919,7 +974,7 @@ function NewsJoin() {
         </div>
         <aside className="join-panel" aria-label="加入我们">
           <GraduationCap size={30} />
-          <h2>加入 Feng Lab</h2>
+          <h2>加入 Feng-lab@Buct</h2>
           <p>{siteInfo.contactNote}</p>
           <a className="button button-primary" href="#/contact">
             <Mail size={18} />
@@ -1197,7 +1252,12 @@ function ContactPage({ language }: { language: Language }) {
     <section className="section section-white">
       <div className="container contact-layout">
         <div className="contact-details">
-          <ContactItem icon={<Mail size={22} />} title={t.email} value={siteInfo.email} href={`mailto:${siteInfo.email}`} />
+          <ContactItem
+            icon={<Mail size={22} />}
+            title={t.email}
+            value={siteInfo.email}
+            lineHrefs={contactEmails.map((email) => `mailto:${email}`)}
+          />
           <ContactItem icon={<Phone size={22} />} title={t.phone} value={siteInfo.phone} />
           <ContactItem icon={<MapPin size={22} />} title={t.address} value={address} />
           <ContactItem icon={<BookOpen size={22} />} title={t.scholar} value={t.scholarValue} href={siteInfo.googleScholar} />
@@ -1210,13 +1270,13 @@ function ContactPage({ language }: { language: Language }) {
               <li key={item}>{item}</li>
             ))}
           </ul>
-          <a className="button button-primary" href={`mailto:${siteInfo.email}`}>
+          <a className="button button-primary" href={`mailto:${primaryContactEmail}`}>
             <Mail size={18} />
             {t.sendEmail}
           </a>
         </div>
         <div className="map-panel">
-          <SmartImage src={mapImage} alt="Feng Lab address map placeholder" className="map-image" />
+          <SmartImage src={mapImage} alt="Feng-lab@Buct address map placeholder" className="map-image" />
           <div>
             <h3>{institution}</h3>
             <p>{office}</p>
@@ -1236,10 +1296,12 @@ function ContactBand() {
           <h2>欢迎加入、访问和合作交流</h2>
         </div>
         <div className="contact-band-actions">
-          <a className="button button-secondary" href={`mailto:${siteInfo.email}`}>
-            <Mail size={18} />
-            {siteInfo.email}
-          </a>
+          {contactEmails.map((email) => (
+            <a className="button button-secondary" href={`mailto:${email}`} key={email}>
+              <Mail size={18} />
+              {email}
+            </a>
+          ))}
           <a className="button button-primary" href="#/contact">
             <MapPin size={18} />
             查看联系方式
@@ -1343,11 +1405,13 @@ function ContactItem({
   title,
   value,
   href,
+  lineHrefs,
 }: {
   icon: React.ReactNode;
   title: string;
   value: string;
   href?: string;
+  lineHrefs?: string[];
 }) {
   const content = (
     <>
@@ -1355,11 +1419,17 @@ function ContactItem({
       <span>
         <strong>{title}</strong>
         <small>
-          {value.split('\n').map((line) => (
-            <span className="address-line" key={line}>
-              {line}
-            </span>
-          ))}
+          {value.split('\n').map((line, index) =>
+            lineHrefs?.[index] ? (
+              <a className="contact-line-link" href={lineHrefs[index]} key={line}>
+                {line}
+              </a>
+            ) : (
+              <span className="address-line" key={line}>
+                {line}
+              </span>
+            ),
+          )}
         </small>
       </span>
     </>
@@ -1412,7 +1482,7 @@ function Footer({ language }: { language: Language }) {
       <div className="container footer-grid">
         <div>
           <a className="brand footer-brand" href="#/" aria-label={copy[language].homeAria}>
-            <img className="brand-logo" src={siteInfo.logo} alt="Feng Lab logo" />
+            <img className="brand-logo" src={siteInfo.logo} alt="Feng-lab@Buct logo" />
             <span>
               <strong>{siteInfo.name}</strong>
               <small>{copy[language].headerSubtitle}</small>
@@ -1422,7 +1492,13 @@ function Footer({ language }: { language: Language }) {
         </div>
         <div>
           <h2>{t.contact}</h2>
-          <p>{siteInfo.email}</p>
+          <div className="footer-email-list">
+            {contactEmails.map((email) => (
+              <a href={`mailto:${email}`} key={email}>
+                {email}
+              </a>
+            ))}
+          </div>
           <p>
             {address.split('\n').map((line) => (
               <span className="address-line" key={line}>

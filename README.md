@@ -1,6 +1,6 @@
-# Feng Lab Website
+# Feng-lab@Buct Website
 
-Feng Lab 课题组官网初版，采用 React + Vite + TypeScript 构建。站点是纯静态产物，可先部署到 Vercel，后续也可以把 `dist` 目录上传到腾讯云、阿里云或学校服务器。
+Feng-lab@Buct 课题组官网初版，采用 React + Vite + TypeScript 构建。站点是纯静态产物，可先部署到 Vercel，后续也可以把 `dist` 目录上传到腾讯云、阿里云或学校服务器。
 
 ## 本地运行
 
