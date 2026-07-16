@@ -1,4 +1,4 @@
-2026年5月，课题组党双博、陈玲等同学参与完成的研究论文“焦磷酸锰矿化 DNA 纳米疫苗诱导强效体液和细胞免疫”（*Manganese Pyrophosphate Mineralized DNA Nanovaccine Elicits Potent Humoral and Cellular Immunity*）被 *Angewandte Chemie International Edition* 接收并在线发表。党双博、孙芸、陈玲和董宇航为共同第一作者，李凤老师等为通讯作者。
+2026年5月，课题组党双博、陈玲等同学参与完成的研究论文“焦磷酸锰矿化 DNA 纳米疫苗诱导强效体液和细胞免疫”（*Manganese Pyrophosphate Mineralized DNA Nanovaccine Elicits Potent Humoral and Cellular Immunity*）被 *Angewandte Chemie International Edition* 接收并在线发表。
 
 针对亚单位疫苗免疫原性不足、尤其是细胞免疫诱导较弱的问题，我们团队与中国生物研究院合作，通过滚环扩增构建含 CpG 和 RBD 适配体序列的长链 DNA，并利用 Mn²⁺ 与扩增副产物焦磷酸根发生矿化，形成锰焦磷酸盐矿化 DNA 纳米佐剂 MnCA，再吸附 SARS-CoV-2 三聚体 RBD 抗原，得到 MnCA+RBD 纳米疫苗。其创新不只是“把锰和 DNA 放在一起”，而是把 CpG–TLR9 通路、Mn²⁺–cGAS–STING 通路、纳米多孔抗原递送整合为一个协同免疫平台，最终偏向诱导 Th1 型细胞免疫，弥补传统铝佐剂在这方面的不足。
 
