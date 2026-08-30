@@ -711,7 +711,17 @@ function HomePage({ language }: { language: Language }) {
                   <time dateTime={item.date.replace('.', '-')}>{item.date}</time>
                   <div>
                     <span className="news-item-heading">
-                      <h3>{item.title}</h3>
+                      <h3>
+                        {item.slug === 'jacs-rsv-orthogonal-nanoadjuvant' && language === 'zh' ? (
+                          <>
+                            {item.title.slice(0, -4)}
+                            <br />
+                            {item.title.slice(-4)}
+                          </>
+                        ) : (
+                          item.title
+                        )}
+                      </h3>
                       <ArrowRight size={18} aria-hidden="true" />
                     </span>
                   </div>
