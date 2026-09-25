@@ -3,7 +3,6 @@ import ReactMarkdown from 'react-markdown';
 import {
   ArrowLeft,
   ArrowRight,
-  BookOpen,
   CalendarDays,
   ChevronDown,
   ChevronLeft,
@@ -13,7 +12,6 @@ import {
   Mail,
   MapPin,
   Menu,
-  Phone,
   Users,
   X,
 } from 'lucide-react';
@@ -42,6 +40,7 @@ type StaticRoute =
   | '/members/current'
   | '/members/alumni'
   | '/gallery'
+  | '/news'
   | '/contact';
 
 type NewsRoute = `/news/${string}`;
@@ -77,6 +76,7 @@ const MOBILE_HEADER_QUERY = '(max-width: 760px)';
 const PRESERVE_COMPACT_NAV_KEY = 'fenglab:preserve-compact-navigation';
 const HEADER_COMPACT_STATE_KEY = 'fenglab:header-is-compact';
 const LANGUAGE_STORAGE_KEY = 'fenglab:language';
+const HOME_NEWS_LIMIT = 3;
 const contactEmails = siteInfo.email
   .split('\n')
   .map((email) => email.trim())
@@ -100,6 +100,11 @@ const copy = {
       body: siteInfo.homeBody,
       newsTitle: '最新动态',
     },
+    news: {
+      allTitle: '全部新闻',
+      backHome: '返回首页',
+      backToList: '返回全部新闻',
+    },
     hero: {
       aria: '首页大图轮播',
       previous: '上一张',
@@ -122,10 +127,7 @@ const copy = {
     },
     contact: {
       email: '邮箱',
-      phone: '电话',
       address: '地址',
-      scholar: '学术主页',
-      scholarValue: 'Google Scholar / ORCID 待补充',
       collaborationTitle: '招生与合作',
       note: siteInfo.contactNote,
       sendEmail: '发送邮件',
@@ -152,6 +154,11 @@ const copy = {
       body: siteInfo.homeBodyEn,
       newsTitle: 'News',
     },
+    news: {
+      allTitle: 'All News',
+      backHome: 'Back to home',
+      backToList: 'Back to all news',
+    },
     hero: {
       aria: 'Homepage carousel',
       previous: 'Previous',
@@ -174,10 +181,7 @@ const copy = {
     },
     contact: {
       email: 'Email',
-      phone: 'Phone',
       address: 'Address',
-      scholar: 'Academic Profiles',
-      scholarValue: 'Google Scholar / ORCID to be added',
       collaborationTitle: 'Join and Collaborate',
       note: siteInfo.contactNoteEn,
       sendEmail: 'Send email',
@@ -288,6 +292,7 @@ function getInitialLanguage(): Language {
 function getCurrentRoute(): Route {
   const hash = window.location.hash.replace(/^#/, '') || '/';
   if (hash === '/members') return '/members/current';
+  if (hash === '/news') return '/news';
   if (hash.startsWith('/news/')) {
     const slug = hash.slice('/news/'.length);
     return newsItems.some((item) => item.slug === slug) ? (hash as NewsRoute) : '/';
@@ -320,7 +325,11 @@ function App() {
     const activeNews = route.startsWith('/news/')
       ? getNewsItems(language).find((item) => item.slug === route.slice('/news/'.length))
       : undefined;
-    document.title = activeNews ? `${activeNews.title} | Feng-lab@Buct` : t.documentTitle;
+    document.title = activeNews
+      ? `${activeNews.title} | Feng-lab@Buct`
+      : route === '/news'
+        ? `${t.news.allTitle} | Feng-lab@Buct`
+        : t.documentTitle;
     window.localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
   }, [language, route, t.documentTitle]);
 
@@ -386,6 +395,8 @@ function renderRoute(route: Route, language: Language) {
   switch (route) {
     case '/research':
       return <ResearchPage language={language} />;
+    case '/news':
+      return <NewsListPage language={language} />;
     case '/publications':
       return <PublicationsPage language={language} />;
     case '/members/current':
@@ -706,7 +717,7 @@ function HomePage({ language }: { language: Language }) {
           <aside className="home-news-panel" aria-label={t.newsTitle}>
             <h2>{t.newsTitle}</h2>
             <div className="news-list">
-              {currentNewsItems.map((item) => (
+              {currentNewsItems.slice(0, HOME_NEWS_LIMIT).map((item) => (
                 <a className="news-item" href={`#/news/${item.slug}`} key={item.slug}>
                   <time dateTime={item.date.replace('.', '-')}>{item.date}</time>
                   <div>
@@ -728,10 +739,43 @@ function HomePage({ language }: { language: Language }) {
                 </a>
               ))}
             </div>
+            <a className="news-all-link" href="#/news">
+              {copy[language].news.allTitle}
+              <ArrowRight size={18} aria-hidden="true" />
+            </a>
           </aside>
         </div>
       </section>
     </>
+  );
+}
+
+function NewsListPage({ language }: { language: Language }) {
+  const t = copy[language].news;
+
+  return (
+    <section className="section section-white">
+      <div className="container news-archive">
+        <a className="news-back-link" href="#/">
+          <ArrowLeft size={17} aria-hidden="true" />
+          {t.backHome}
+        </a>
+        <header className="news-archive-header">
+          <h1>{t.allTitle}</h1>
+        </header>
+        <div className="news-list">
+          {getNewsItems(language).map((item) => (
+            <a className="news-item" href={`#/news/${item.slug}`} key={item.slug}>
+              <time dateTime={item.date.replace('.', '-')}>{item.date}</time>
+              <div className="news-item-heading">
+                <h2>{item.title}</h2>
+                <ArrowRight size={18} aria-hidden="true" />
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -743,7 +787,7 @@ function NewsArticlePage({ item, language }: { item: NewsItem; language: Languag
   const nextItem = currentIndex >= 0 && currentIndex < currentNewsItems.length - 1
     ? currentNewsItems[currentIndex + 1]
     : undefined;
-  const backLabel = language === 'zh' ? '返回首页' : 'Back to home';
+  const backLabel = copy[language].news.backToList;
   const unavailableMessage = language === 'zh' ? '新闻正文暂不可用。' : 'The article is currently unavailable.';
   const previousLabel = language === 'zh' ? '上一篇' : 'Previous article';
   const nextLabel = language === 'zh' ? '下一篇' : 'Next article';
@@ -752,7 +796,7 @@ function NewsArticlePage({ item, language }: { item: NewsItem; language: Languag
   return (
     <section className="section section-white news-article-section">
       <article className="container news-article">
-        <a className="news-back-link" href="#/">
+        <a className="news-back-link" href="#/news">
           <ArrowLeft size={17} aria-hidden="true" />
           {backLabel}
         </a>
@@ -915,11 +959,6 @@ function ResearchPreview() {
               <div className="card-body">
                 <h3>{direction.title}</h3>
                 <p>{direction.summary}</p>
-                <div className="tag-list">
-                  {direction.keywords.slice(0, 3).map((keyword) => (
-                    <span key={keyword}>{keyword}</span>
-                  ))}
-                </div>
               </div>
             </article>
           ))}
@@ -1009,11 +1048,6 @@ function ResearchPage({ language }: { language: Language }) {
               <div className="direction-copy">
                 <h2>{displayDirection.title}</h2>
                 <p>{displayDirection.detail}</p>
-                <div className="tag-list">
-                  {displayDirection.keywords.map((keyword) => (
-                    <span key={keyword}>{keyword}</span>
-                  ))}
-                </div>
               </div>
             </article>
           );
@@ -1253,10 +1287,6 @@ function GalleryCarouselCard({
 function ContactPage({ language }: { language: Language }) {
   const t = copy[language].contact;
   const address = language === 'zh' ? siteInfo.address : siteInfo.addressEn;
-  const institution = language === 'zh' ? siteInfo.institution : siteInfo.institutionEn;
-  const office = language === 'zh' ? siteInfo.office : siteInfo.officeEn;
-  const lab = language === 'zh' ? siteInfo.lab : siteInfo.labEn;
-  const mapImage = language === 'zh' ? siteInfo.mapImage : siteInfo.mapImageEn;
 
   return (
     <section className="section section-white">
@@ -1268,9 +1298,7 @@ function ContactPage({ language }: { language: Language }) {
             value={siteInfo.email}
             lineHrefs={contactEmails.map((email) => `mailto:${email}`)}
           />
-          <ContactItem icon={<Phone size={22} />} title={t.phone} value={siteInfo.phone} />
           <ContactItem icon={<MapPin size={22} />} title={t.address} value={address} />
-          <ContactItem icon={<BookOpen size={22} />} title={t.scholar} value={t.scholarValue} href={siteInfo.googleScholar} />
         </div>
         <div className="contact-copy">
           <h2>{t.collaborationTitle}</h2>
@@ -1284,14 +1312,6 @@ function ContactPage({ language }: { language: Language }) {
             <Mail size={18} />
             {t.sendEmail}
           </a>
-        </div>
-        <div className="map-panel">
-          <SmartImage src={mapImage} alt="Feng-lab@Buct address map placeholder" className="map-image" />
-          <div>
-            <h3>{institution}</h3>
-            <p>{office}</p>
-            <p>{lab}</p>
-          </div>
         </div>
       </div>
     </section>
