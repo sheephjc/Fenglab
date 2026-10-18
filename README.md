@@ -31,6 +31,8 @@ npm.cmd run build
 
 图片放在 `public/images` 的分类目录中，例如 `public/images/home`、`public/images/members`、`public/images/publications`。CSV 里的图片路径写公开路径，例如 `/images/members/li-feng.jpg`。
 
+课题组风采照片按主题放在 `public/images/gallery/主题名称/` 中，例如 `/images/gallery/2026逸隐观山别墅/2026逸隐观山别墅-1.webp`。首页轮播引用这些照片时使用同一路径。
+
 新闻正文放在 `src/data/news` 中，网页会自动读取该目录下的 Markdown 文件。新闻图片建议放在 `public/images/news/新闻名称` 中，并在 Markdown 里使用 `/images/news/...` 的公开路径引用。
 
 网页使用的优化图片放在 `public/images` 中；被替换的高清原图统一保存在工作区根目录的 `original-images` 中。该目录已排除出 Git、Vite 构建和 Vercel 部署，请在本地或其他存储位置单独备份。

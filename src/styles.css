@@ -1450,6 +1450,12 @@ button {
   background: #f7fbff;
 }
 
+/* Keep the full frame for photos with faces close to the top edge. */
+.gallery-carousel .gallery-image[src$="/2026逸隐观山别墅-5.webp"],
+.gallery-carousel .gallery-image[src$="/2026逸隐观山别墅-7.webp"] {
+  object-fit: contain;
+}
+
 .gallery-control {
   width: 44px;
   height: 54px;

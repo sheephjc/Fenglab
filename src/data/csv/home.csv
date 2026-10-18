@@ -1,9 +1,10 @@
 kind,order,date,title_zh,title_en,description_zh,description_en,image,alt_zh,alt_en,caption_zh,caption_en,image_fit,caption_bilingual,slug,article_zh,article_en
 hero,1,,"2026 Feng Group 合照","2026 Feng Group Photo",,,/images/home/hero1-2026-feng-group.webp,"2026 年 Feng-lab@Buct 课题组合照","2026 Feng-lab@Buct group photo","2026 Feng Group","2026 Feng Group",cover,no
 hero,2,,"2025 Feng Group 合照","2025 Feng Group Photo",,,/images/home/hero2-2025-feng-group.webp,"2025 年 Feng-lab@Buct 课题组合照","2025 Feng-lab@Buct group photo","2025 Feng Group","2025 Feng Group",cover,no
-hero,3,,"2026毕业季","2026 Graduation",,,/images/gallery/2026毕业-2.webp,"2026 年课题组毕业季校园合影","Feng-lab@Buct campus group photo at the 2026 graduation","2026毕业季","2026 Graduation",cover,no
-hero,4,,"2025毕业季","2025 Graduation",,,/images/gallery/2025毕业-4.webp,"2025 年课题组毕业季草坪合影","Feng-lab@Buct group photo on the lawn at the 2025 graduation","2025毕业季","2025 Graduation",cover,no
-hero,5,,"2025水长城团建","2025 Water Great Wall Outing",,,/images/gallery/2025水长城-6.webp,"2025 年课题组水长城团建合影","Feng-lab@Buct group photo during the 2025 Water Great Wall outing","2025水长城团建","2025 Water Great Wall Outing",cover,no
+hero,3,,"2026毕业季","2026 Graduation",,,/images/gallery/2026毕业季/2026毕业-2.webp,"2026 年课题组毕业季校园合影","Feng-lab@Buct campus group photo at the 2026 graduation","2026毕业季","2026 Graduation",cover,no
+hero,4,,"2025毕业季","2025 Graduation",,,/images/gallery/2025毕业季/2025毕业-4.webp,"2025 年课题组毕业季草坪合影","Feng-lab@Buct group photo on the lawn at the 2025 graduation","2025毕业季","2025 Graduation",cover,no
+hero,5,,"2025水长城团建","2025 Water Great Wall Outing",,,/images/gallery/2025水长城/2025水长城-6.webp,"2025 年课题组水长城团建合影","Feng-lab@Buct group photo during the 2025 Water Great Wall outing","2025水长城团建","2025 Water Great Wall Outing",cover,no
+hero,6,,"2026逸隐观山别墅","2026 Yiyin Guanshan Villa",,,/images/gallery/2026逸隐观山别墅/2026逸隐观山别墅-8.webp,"2026 年课题组逸隐观山别墅合影","Feng-lab@Buct group photo at Yiyin Guanshan Villa in 2026","2026逸隐观山别墅","2026 Yiyin Guanshan Villa",cover,no
 news,1,2026.09,"祝贺课题组博士生在北京化工大学2026年度博士生学术论坛中荣获佳绩","Congratulations to Our Ph.D. Students on Their Awards at BUCT's 2026 Doctoral Academic Forum",,,,,,,,,,doctoral-forum-2026,博士生学术论坛2026.md,博士生学术论坛2026.en.md
 news,2,2026.09,"李凤老师参加中国化学会第十五届全国分析化学年会并作邀请报告","Professor Feng Li Delivers an Invited Talk at the 15th National Conference on Analytical Chemistry of the Chinese Chemical Society",,,,,,,,,,analytical-chemistry-2026,全国分析化学年会2026.md,全国分析化学年会2026.en.md
 news,3,2026.09,"李凤教授应邀参加兰州大学化学学科创建80周年暨高质量发展大会","Professor Feng Li Attends Lanzhou University's Conference Celebrating 80 Years of Chemistry and Advancing High-Quality Development",,,,,,,,,,lanzhou-chemistry-80th-anniversary,兰州大学化学80周年.md,兰州大学化学80周年.en.md
